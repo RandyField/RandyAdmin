@@ -1,0 +1,180 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.Content.cshtml";
+}
+<div class="row">
+    <div class='col-sm-12'>
+        <div id='sample-table-2_filter' class='dataTables_filter'>
+            <label>
+                部门名称:
+                                <input aria-controls='sample-table-2' id="departName" type='text'></label>
+            <label>
+                部门编号:
+                                <input aria-controls='sample-table-2' id="departCode" type='text'></label>
+            <button class='btn btn-danger btn-sm' id="searchBtn">
+                <i class='icon-reply icon-only'></i>
+                搜索 
+            </button>
+            <button class='btn btn-sm' onclick='Add()'>
+                <i class='icon-pencil align-top bigger-125'></i>
+                新增 
+            </button>
+        </div>
+    </div>
+
+    <div class="col-xs-12">
+        @*       <h3 class="header smaller lighter blue">列表</h3>*@
+        <div class="table-header">
+            查询结果
+        </div>
+
+        <div class="table-responsive">
+            <table id="sample-table-2" class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th class="center">
+                            <label>
+                                <input type="checkbox" class="ace" />
+                                <span class="lbl"></span>
+                            </label>
+                        </th>
+                        <th>部门名称</th>
+                        <th>部门编号</th>
+                        <th class="hidden-480">部门负责人</th>
+
+                        <th>
+                            <i class="icon-time bigger-110 hidden-480"></i>
+                            部门负责人电话
+                        </th>
+                        <th class="hidden-480 bigger-110">备注</th>
+                        <th class="hidden-480 bigger-110">操作</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<!--jquery.dataTables-->
+
+@Html.Partial("_ListLayout.DataTableOperation")
+<!-- datatable操作按钮脚本-->
+
+<!-- ace scripts -->
+<script type="text/javascript">
+    jQuery(function ($) {
+        var oDataTable = $('#sample-table-2').dataTable({
+            "bProcessing": true,//设置异步请求时，是否有等待框 开启读取服务器数据时显示正在加载中……特别是大数据量的时候，开启此功能比较好  
+            "bServerSide": true,//指定服务端分页，必须的属性！
+            "sAjaxDataProp": "aaData",//是服务器分页的标志，必须有   
+            "sAjaxSource": '../Depart/Search/', //获取数据的ajax方法的URL
+            "bPaginate": true,//是否支持分页,分页工具条显示
+            "sPaginationType": "bootstrap",//分页工具条样式  -bootstrap
+            "bStateSave": false, //是否打开客户端状态记录功能,此功能在ajax刷新纪录的时候不会将个性化设定回复为初始化状态  -保存状态到cookie  
+            "bScrollCollapse": true, //当显示的数据不足以支撑表格的默认的高度  
+            "bFilter": false, //搜索栏  
+            "bSort": false, //是否支持排序功能  
+            "bInfo": true, //显示表格信息  
+            "bAutoWidth": true, //自适应宽度  
+            "bJQueryUI": false,//是否开启主题  
+            "bDestroy": true,
+            "isShowSearch": false,
+            "bLengthChange": true, //用户不可改变每页显示数量 每页显示的记录数
+            "iDisplayLength": 15, //每页显示8条数据
+            "iDisplayStart": 0,
+            //"fnServerData": fnAjaxRequest,//获取数据的处理函数   
+            //"aLengthMenu": [
+            //    [5, 15, 20, -1],
+            //    [5, 15, 20, "All"] // change per page values here
+            //],
+            "aLengthMenu": [
+               [5, 15, 20, 50],
+               [5, 15, 20, 50]
+            ],
+            //查询参数 筛选参数
+            "fnServerParams": function (aoData) {
+                aoData.push({ "name": "departName", "value": $("#departName").val() });
+                aoData.push({ "name": "departCode", "value": $("#departCode").val() });
+            },
+            //初始化要显示的列 
+            "aoColumns": [
+                {
+                    "mDataProp": "ID",//获取列数据，跟服务器返回字段一致  
+                    "sClass": "center",//显示样式  
+                    "mRender": function (data, type, rowData) {//返回自定义的样式  
+                        return "<label><input type='checkbox' class='ace' value='" + rowData.ID + "' /><span class='lbl'></span></label>"
+                    }
+                }, {
+                    "mDataProp": "DepartName"
+                }, {
+                    "mDataProp": "DepartCode"
+                }, {
+                    "mDataProp": "ChargeMan"
+                }, {
+                    "mDataProp": "ChargeManPhone"
+                    //"mRender": function (data, type, full) {
+                    //    return new Date(data)//处理时间显示  
+                    //    .toLocaleString();
+                    //}
+                }, {
+                    "mDataProp": "Remark",
+                    "mRender": function (data, type, rowData) {
+                        return "<span class='label label-sm label-info arrowed arrowed-righ'>Sold</span>"
+                    }
+                }, {
+                    "sDefaultContent": "",
+                    "mRender": function (data, type, rowData) {
+                        return $("#handleBtn").html()
+                    }
+                }],
+            "oLanguage": {
+                "sSearch": "搜索",
+                "sProcessing": "正在加载中......",
+                "sEmptyTable": "查询结果为空！",
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+                "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录",
+                "sZeroRecords": "没有检索到数据",
+                "sInfoEmpty": "",
+                "sInfoFiltered": "",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上一页",
+                    "sNext": "下一页",
+                    "sLast": "末页"
+                }
+            }
+        });
+
+        $("#searchBtn").bind('click', function () {
+            oDataTable.fnClearTable();
+        });
+
+        function retrieveData(sSource, aoData, fnCallback) {
+            //将客户名称加入参数数组
+            aoData.push({ "name": "departName", "value": $("#departName").val() });
+        }
+
+        $('table th input:checkbox').on('click', function () {
+            var that = this;
+            $(this).closest('table').find('tr > td:first-child input:checkbox')
+                .each(function () {
+                    this.checked = that.checked;
+                    $(this).closest('tr').toggleClass('selected');
+                });
+        });
+
+
+        $('[data-rel="tooltip"]').tooltip({ placement: tooltip_placement });
+        function tooltip_placement(context, source) {
+            var $source = $(source);
+            var $parent = $source.closest('table')
+            var off1 = $parent.offset();
+            var w1 = $parent.width();
+
+            var off2 = $source.offset();
+            var w2 = $source.width();
+
+            if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
+            return 'left';
+        }
+    })
+</script>

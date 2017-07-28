@@ -1,0 +1,364 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.Content.cshtml";
+}
+
+@using EFModel;
+@using Common.Helper;
+@model List<SYS_PERMISSION_MENU_RELATION>
+
+<div class="row">
+    <div class='col-sm-12'>
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">权限名称</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="permissionName" placeholder="权限名称" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+            <div class="hr hr32 hr-dotted"></div>
+            <div class="form-group">
+                <div class="col-sm-6 col-md-offset-2">
+                    <h3 class="row header smaller lighter blue">
+                        <span class="col-xs-6">模块功能</span>
+                        <label>
+                            全选:
+                                        <input name="checkall" data-type="checkall" class="ace ace-switch ace-switch-6" type="checkbox">
+                            <span class="lbl"></span>
+                        </label>
+                    </h3>
+
+                    <div class="panel-group" id="accordion">
+
+                        @{
+                            List<SYS_MENU> firstlist = new List<SYS_MENU>();
+                            List<SYS_MENU> secondlist = new List<SYS_MENU>();
+                            List<SYS_MENU> thirdlist = new List<SYS_MENU>();
+                            firstlist = (List<SYS_MENU>)CacheHelper.GetCache("FirstMenu");
+                            secondlist = (List<SYS_MENU>)CacheHelper.GetCache("SecondMenu");
+                            thirdlist = (List<SYS_MENU>)CacheHelper.GetCache("ThirdMenu");
+                            SYS_PERMISSION_MENU_RELATION menuPermission = null;
+                            string access = "";
+
+                            if (firstlist != null && firstlist.Count > 0)
+                            {
+                                int i = 1;
+                                //遍历一级菜单
+                                foreach (var item in firstlist)
+                                {
+                                    access = "";
+                                    menuPermission = Model.Where(a => a.MenuID == item.ID).FirstOrDefault();
+                                    if (menuPermission != null)
+                                    {
+                                        access = menuPermission.Access;
+                                    }
+
+                                    int code = i % 3;                                       
+                            <div class="@CommonHelper.GetPermissionStyle(code)">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title" data-id="@item.ID">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#@item.Alias">【@item.MenuName】
+                                        </a>
+                                        <label>
+                                            新增:
+                                        <input name="@item.Alias" data-type="add" class="ace ace-switch ace-switch-6" type="checkbox" @BLL.CommonHelper.PermissionHelper.IsCheckd(access, "add")>
+                                            <span class="lbl"></span>
+                                        </label>
+                                        <label>
+                                            编辑：
+                                        <input name="@item.Alias" data-type="edit" class="ace ace-switch ace-switch-6" type="checkbox" @BLL.CommonHelper.PermissionHelper.IsCheckd(access, "edit")>
+                                            <span class="lbl"></span>
+                                        </label>
+                                        <label>
+                                            删除：
+                                        <input name="@item.Alias" data-type="delete" class="ace ace-switch ace-switch-6" type="checkbox" @BLL.CommonHelper.PermissionHelper.IsCheckd(access, "delete")>
+                                            <span class="lbl"></span>
+                                        </label>
+                                        <label>
+                                            查询：
+                                        <input name="@item.Alias" data-type="query" class="ace ace-switch ace-switch-6" type="checkbox" @BLL.CommonHelper.PermissionHelper.IsCheckd(access, "query")>
+                                            <span class="lbl"></span>
+                                        </label>
+                                    </h4>
+                                </div>
+
+                                @{
+                                    var isExitSecond = (secondlist.Where(a => a.ParentMenu == item.ID).ToList().Count > 0);
+
+                                    //存在二级菜单
+                                    if (isExitSecond)
+                                    {
+                                    <div id="@item.Alias" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <!--遍历二级菜单-->
+                                            @foreach (var secondItem in secondlist.Where(a => a.ParentMenu == item.ID).ToList())
+                                            {
+                                                access = "";
+                                                menuPermission = Model.Where(a => a.MenuID == secondItem.ID).FirstOrDefault();
+                                                if (menuPermission != null)
+                                                {
+                                                    access = menuPermission.Access;
+                                                }
+                                                <div class="@CommonHelper.GetPermissionStyle(code)">
+                                                    <div class="panel-heading">
+                                                        <h4 class="panel-title" data-id="@secondItem.ID">
+                                                            <a data-toggle="collapse" href="#@secondItem.Alias" data-parent="accordion">【@secondItem.MenuName】
+                                                            </a>
+
+                                                            <label>
+                                                                新增:
+                                        <input name="@item.Alias" data-type="add" class="ace ace-switch ace-switch-6" type="checkbox" @BLL.CommonHelper.PermissionHelper.IsCheckd(access, "add")>
+                                                                <span class="lbl"></span>
+                                                            </label>
+                                                            <label>
+                                                                编辑：
+                                        <input name="@item.Alias" data-type="edit" class="ace ace-switch ace-switch-6" type="checkbox" @BLL.CommonHelper.PermissionHelper.IsCheckd(access, "edit")>
+                                                                <span class="lbl"></span>
+                                                            </label>
+                                                            <label>
+                                                                删除：
+                                        <input name="@item.Alias" data-type="delete" class="ace ace-switch ace-switch-6" type="checkbox" @BLL.CommonHelper.PermissionHelper.IsCheckd(access, "delete")>
+                                                                <span class="lbl"></span>
+                                                            </label>
+                                                            <label>
+                                                                查询：
+                                        <input name="@item.Alias" data-type="query" class="ace ace-switch ace-switch-6" type="checkbox" @BLL.CommonHelper.PermissionHelper.IsCheckd(access, "query")>
+                                                                <span class="lbl"></span>
+                                                            </label>
+                                                        </h4>
+                                                    </div>
+
+                                                    @{  
+                                                var isExitThird = (thirdlist.Where(a => a.ParentMenu == secondItem.ID).ToList().Count > 0);
+                                                if (isExitThird)
+                                                {
+                                                        <div id="@secondItem.Alias" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                @foreach (var thirdItem in thirdlist.Where(a => a.ParentMenu == secondItem.ID).ToList())
+                                                                {
+                                                                    access = "";
+                                                                    menuPermission = Model.Where(a => a.MenuID == thirdItem.ID).FirstOrDefault();
+                                                                    if (menuPermission != null)
+                                                                    {
+                                                                        access = menuPermission.Access;
+                                                                    }
+                                                                   
+                                                                    <div class="@CommonHelper.GetPermissionStyle(code)">
+                                                                        <div class="panel-heading">
+                                                                            <h4 class="panel-title" data-id="@thirdItem.ID">
+                                                                                <a data-toggle="collapse" data-parent="accordion" href="#@thirdItem.Alias" >【@thirdItem.MenuName】
+                                                                                </a>
+
+                                                                                <label>
+                                                                                    新增:
+                                        <input name="@item.Alias" data-type="add" class="ace ace-switch ace-switch-6" type="checkbox" @BLL.CommonHelper.PermissionHelper.IsCheckd(access, "add")>
+                                                                                    <span class="lbl"></span>
+                                                                                </label>
+                                                                                <label>
+                                                                                    编辑：
+                                        <input name="@item.Alias" data-type="edit" class="ace ace-switch ace-switch-6" type="checkbox" @BLL.CommonHelper.PermissionHelper.IsCheckd(access, "edit")>
+                                                                                    <span class="lbl"></span>
+                                                                                </label>
+                                                                                <label>
+                                                                                    删除：
+                                        <input name="@item.Alias" data-type="delete" class="ace ace-switch ace-switch-6" type="checkbox" @BLL.CommonHelper.PermissionHelper.IsCheckd(access, "delete")>
+                                                                                    <span class="lbl"></span>
+                                                                                </label>
+                                                                                <label>
+                                                                                    查询：
+                                        <input name="@item.Alias" data-type="query" class="ace ace-switch ace-switch-6" type="checkbox" @BLL.CommonHelper.PermissionHelper.IsCheckd(access, "query")>
+                                                                                    <span class="lbl"></span>
+                                                                                </label>
+                                                                            </h4>
+                                                                        </div>
+                                                                    </div>
+@*<div id="@thirdItem.Alias" class="panel-collapse collapse in"></div>*@
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                }
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                    }
+                                }
+
+                            </div>
+                                    i++;
+                                }
+
+                            }
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+            @*按钮*@
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="button" onclick="save()">
+                        <i class="icon-ok bigger-110"></i>
+                        保存
+                    </button>
+                    &nbsp; &nbsp; &nbsp;
+											<button class="btn" type="reset">
+                                                <i class="icon-undo bigger-110"></i>
+                                                重置
+                                            </button>
+                    &nbsp; &nbsp; &nbsp;
+            <button class="btn btn-danger" type="button" onclick="back()">
+                <i class="icon-reply bigger-110"></i>
+                返回
+            </button>
+
+                </div>
+            </div>
+            <div class="hr hr-24"></div>
+        </form>
+    </div>
+</div>
+
+<script src="~/assets/js/extentjquery/jquery.iframe.HeightReLoad.js"></script>
+<script src="~/assets/js/artDialog/dialog.js"></script>
+<script src="~/assets/js/extentjquery/jquery.input.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $(".panel-collapse").collapse('show');
+
+
+        $('.panel-collapse').on('shown.bs.collapse', function () {
+            // 执行一些动作...
+            $.ReloadIframe("rightMain");
+        })
+        var count = $(".panel-title").size();
+        $("input[name='checkall']").bind("click", function () {
+            if ($(this).prop('checked')) {
+                $(".panel-group").find("input[type='checkbox']").prop("checked", true);
+            }
+            else {
+                $(".panel-group").find("input[type='checkbox']").prop("checked", false);
+            }
+        });
+
+        //alert(count);
+        $(".panel-title").each(function () {
+            $(this).find("input").each(function () {
+                $(this).bind('click', function () {
+                    var checkType = $(this).attr("data-type");
+                    if (checkType == "add") {
+                        if ($(this).prop('checked')) {
+                            $(this).parent().siblings().find("input[data-type='query']").prop("checked", true);
+                        }
+                    }
+                    if (checkType == "edit") {
+                        if ($(this).prop('checked')) {
+                            $(this).parent().siblings().find("input[data-type='add']").prop("checked", true);
+                            $(this).parent().siblings().find("input[data-type='query']").prop("checked", true);
+                        }
+                    }
+                    if (checkType == "delete") {
+                        if ($(this).prop('checked')) {
+                            $(this).parent().siblings().find("input").prop("checked", true);
+                        }
+                    }
+                    if (checkType == "query") {
+                        if ($(this).prop('checked')) {
+                            queryvalue = "1";
+                        }
+                    }
+                });
+            });
+        });
+    });
+
+    function back() {
+        $.returnBack("../Permission/Index");
+    }
+
+    function save() {
+        //非空验证
+        if ($.inputValiNull($("#permissionName"), "提示", "权限名称不能为空")) {
+            return;
+        }
+
+        //权限列表
+        var permissionData = [];
+        var permissionName = $("#permissionName").val();
+        $(".panel-title").each(function () {
+            var item = {};
+            var id = $(this).attr("data-id");
+            var addvalue = "";
+            var editvalue = "";
+            var deletevalue = "";
+            var queryvalue = "";
+            item["MenuId"] = id;
+            $(this).find("input").each(function () {
+                var checkType = $(this).attr("data-type");
+
+                if (checkType == "add") {
+                    if ($(this).prop('checked')) {
+                        addvalue = "1";
+                    }
+                    else {
+                        addvalue = "0";
+                    }
+                }
+                if (checkType == "edit") {
+                    if ($(this).prop('checked')) {
+                        editvalue = "1";
+                    }
+                    else {
+                        editvalue = "0";
+                    }
+                }
+                if (checkType == "delete") {
+                    if ($(this).prop('checked')) {
+                        deletevalue = "1";
+                    }
+                    else {
+                        deletevalue = "0";
+                    }
+                }
+                if (checkType == "query") {
+                    if ($(this).prop('checked')) {
+                        queryvalue = "1";
+                    }
+                    else {
+                        queryvalue = "0";
+                    }
+                }
+                item["add"] = addvalue;
+                item["edit"] = editvalue;
+                item["delete"] = deletevalue;
+                item["query"] = queryvalue;
+                item["permissionName"] = permissionName;
+            });
+
+            permissionData.push(item);
+
+        });
+        $.ajax({
+            type: 'post',//可选get  
+            url: '../../Permission/Add',
+            data: JSON.stringify(permissionData),
+            contentType: "application/json", //必须有 
+            dataType: 'json',//服务器返回的数据类型 可选XML ,Json jsonp script htmltext等  
+            success: function (result) {
+                if (result.success) {
+                    $.tips("保存成功", true, "../Permission/Index");
+                }
+                else {
+                    $.tips("保存失败，失败原因:" + result.msg + "", true, "../Permission/Index");
+                }
+            },
+            error: function () {
+
+            }
+        });
+    }
+</script>

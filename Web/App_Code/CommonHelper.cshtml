@@ -1,0 +1,20 @@
+﻿@helper GetPermissionStyle(int code)
+{    
+    string styleclass = "";
+    if (code == 0)
+    {
+        styleclass = "panel panel-warning";
+    @styleclass
+    }
+    if (code == 1)
+    {
+        styleclass = "panel panel-success";
+    @styleclass
+    }
+    if (code == 2)
+    {
+        styleclass = "panel panel-info";
+    @styleclass
+    }           
+}
+}

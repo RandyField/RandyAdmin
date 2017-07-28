@@ -1,0 +1,37 @@
+﻿<#@ template language="c#" HostSpecific="True" #>
+<#@ output extension= ".cs" #>
+<#
+	TableHost host = (TableHost)(Host);	
+	string DbParaHead=host.DbParaHead;
+	string DbParaDbType=host.DbParaDbType;
+	string preParameter=host.preParameter;
+	string ModelSpace = host.NameSpace+".Model."+ host.GetModelClass(host.TableName);
+	ColumnInfo identityKey=host.IdentityKey;
+	string returnValue = "void";
+    if (identityKey!=null)
+    {         
+         returnValue = CodeCommon.DbTypeToCS(identityKey.TypeName);              
+    }
+#>
+using EFModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace Interface  
+<# if( host.Folder.Length > 0){ #>
+	.<#= host.Folder #>
+<# } #>
+{
+	///<summary>
+	<# if( host.TableDescription.Length > 0) {#>
+ 	///I_<#= host.TableDescription #>_DAL
+	<# } #>
+	///Author:ZhangDeng
+	///</summary>
+	public interface I_<#= host.GetDALClass(host.TableName) #>_DAL:I_BASE_Interface<<#= host.GetDALClass(host.TableName)#>>
+	{	
+
+	}
+}

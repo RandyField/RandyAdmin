@@ -1,0 +1,98 @@
+﻿@using EFModel;
+@using Common.Helper;
+
+
+<ul class="nav nav-list">
+
+    @{
+        List<SYS_MENU> firstlist = new List<SYS_MENU>();
+        List<SYS_MENU> secondlist = new List<SYS_MENU>();
+        List<SYS_MENU> thirdlist = new List<SYS_MENU>();
+        firstlist = (List<SYS_MENU>)CacheHelper.GetCache("FirstMenu");
+        secondlist = (List<SYS_MENU>)CacheHelper.GetCache("SecondMenu");
+        thirdlist = (List<SYS_MENU>)CacheHelper.GetCache("ThirdMenu");
+
+        if (firstlist != null && firstlist.Count > 0)
+        {
+            //遍历一级菜单
+            foreach (var item in firstlist)
+            {
+                var isExitSecond = (secondlist.Where(a => a.ParentMenu == item.ID).ToList().Count > 0);
+
+                //存在二级菜单
+                if (isExitSecond)
+                {
+        <li>
+            <a href="#" class="dropdown-toggle">
+                @Html.Raw(item.MenuIcon)
+                <span class="menu-text">@item.MenuName </span>
+
+                <b class="arrow icon-angle-down"></b>
+
+            </a>
+
+            <ul class="submenu">
+
+                <!--遍历二级菜单-->
+                @{
+                    var templist = secondlist.Where(a => a.ParentMenu == item.ID).OrderBy(a => a.Sort).ToList();
+                    foreach (var secondItem in templist)
+                    {
+                        //存在三级菜单
+                        var isExitThird = (thirdlist.Where(a => a.ParentMenu == secondItem.ID).ToList().Count > 0);
+                        if (isExitThird)
+                        {
+                    <li>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="icon-double-angle-right"></i>
+                            @secondItem.MenuName
+                            <b class="arrow icon-angle-down"></b>
+                        </a>
+
+                        <ul class="submenu">
+
+                            <!--遍历三级菜单-->
+                            @{
+                            var thirdTemplist = thirdlist.Where(a => a.ParentMenu == secondItem.ID).OrderBy(a => a.Sort).ToList();
+                            foreach (var thirdItem in thirdTemplist)
+                            {
+                                <li>
+                                    <a href="@thirdItem.MenuUrl"  target="right">
+                                        <i class="icon-leaf"></i>
+                                        @thirdItem.MenuName
+                                    </a>
+                                </li>
+                            }
+                            }
+                        </ul>
+                    </li>
+                        }
+                        else
+                        {
+                    <li>
+                        <a href="@secondItem.MenuUrl"  target="right">
+                            <i class="icon-double-angle-right"></i>
+                            @secondItem.MenuName
+                        </a>
+                    </li>
+                        }
+
+                    }
+                }
+            </ul>
+        </li>
+                }
+                else
+                {
+        <li>
+            <a href="@item.MenuUrl" target="right">
+                @Html.Raw(item.MenuIcon)
+                <span class="menu-text">@item.MenuName </span>
+
+            </a>
+        </li>
+                }
+            }
+        }        
+    }
+</ul>

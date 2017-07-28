@@ -1,0 +1,190 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.Content.cshtml";
+}
+
+@using EFModel;
+@using Common.Helper;
+
+<div class="row">
+    <div class='col-sm-12'>
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">游戏名称</label>
+
+                <div class="col-sm-9">
+                    <select  class="col-xs-10 col-sm-5" id="gameName">
+                    </select>
+                    @*<input type="text" id="gameName" placeholder="游戏名称" class="col-xs-10 col-sm-5" />*@
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">计算机名</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="pcName" placeholder="计算机名" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">玩家昵称</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="nickName" placeholder="玩家昵称" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">微信OpenId</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="openid" placeholder="微信OpenId" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">游戏分数</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="score" placeholder="游戏分数" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">游戏时间</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="playtime" placeholder="游戏时间" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss' })" readonly="readonly" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+            <div class="hr hr32 hr-dotted"></div>
+
+
+            @*按钮*@
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="button" onclick="save()">
+                        <i class="icon-ok bigger-110"></i>
+                        保存
+                    </button>
+                    &nbsp; &nbsp; &nbsp;
+											<button class="btn" type="reset">
+                                                <i class="icon-undo bigger-110"></i>
+                                                重置
+                                            </button>
+                    &nbsp; &nbsp; &nbsp;
+            <button class="btn btn-danger" type="button" onclick="back()">
+                <i class="icon-reply bigger-110"></i>
+                返回
+            </button>
+
+                </div>
+            </div>
+            <div class="hr hr-24"></div>
+        </form>
+    </div>
+</div>
+
+<script src="~/assets/js/extentjquery/jquery.iframe.HeightReLoad.js"></script>
+<script src="~/assets/js/artDialog/dialog.js"></script>
+<script src="~/assets/js/extentjquery/jquery.input.js"></script>
+<script src="~/assets/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $.ReloadIframe("rightMain");
+
+        $.getJSON("../../GameRecord/GetGameList",null, function (data) {
+            $.each(data, function (i, item) {
+                $("#gameName").append("<option value='" + item.value + "'>" + item.text + "</option>");
+            });
+        });
+       
+
+
+        //alert(count);
+        $(".panel-title").each(function () {
+            $(this).find("input").each(function () {
+                $(this).bind('click', function () {
+                    var checkType = $(this).attr("data-type");
+                    if (checkType == "add") {
+                        if ($(this).prop('checked')) {
+                            $(this).parent().siblings().find("input[data-type='query']").prop("checked", true);
+                        }
+                    }
+                    if (checkType == "edit") {
+                        if ($(this).prop('checked')) {
+                            $(this).parent().siblings().find("input[data-type='add']").prop("checked", true);
+                            $(this).parent().siblings().find("input[data-type='query']").prop("checked", true);
+                        }
+                    }
+                    if (checkType == "delete") {
+                        if ($(this).prop('checked')) {
+                            $(this).parent().siblings().find("input").prop("checked", true);
+                        }
+                    }
+                    if (checkType == "query") {
+                        if ($(this).prop('checked')) {
+                            queryvalue = "1";
+                        }
+                    }
+                });
+            });
+        });
+    });
+
+    function back() {
+        $.returnBack("../GameRecord/Index");
+    }
+
+    function save() {
+        //非空验证
+        if ($.inputValiNull($("#gameName"), "提示", "游戏名称不能为空")) {
+            return;
+        }
+        if ($.inputValiNull($("#pcName"), "提示", "计算机名不能为空")) {
+            return;
+        }
+        if ($.inputValiNull($("#nickName"), "提示", "玩家昵称不能为空")) {
+            return;
+        }
+        if ($.inputValiNull($("#openid"), "提示", "微信OpenId不能为空")) {
+            return;
+        }
+        if ($.inputValiNull($("#score"), "提示", "游戏分数不能为空")) {
+            return;
+        }
+        if ($.inputValiNull($("#playtime"), "提示", "游戏时间不能为空")) {
+            return;
+        }
+
+        //权限列表
+        var postData = {};
+        postData["Gameid"] = $("#gameName").val();
+        postData["PlayerScore"] = $("#score").val();
+        postData["PlayerNickname"] = $("#nickName").val();
+        postData["PlayerOpenId"] = $("#openid").val();
+        postData["ComputerName"] = $("#pcName").val();
+        postData["UploadTime"] = $("#playtime").val();
+
+        $.ajax({
+            type: 'post',//可选get  
+            url: '../../GameRecord/Add',
+            data: JSON.stringify(postData),
+            contentType: "application/json", //必须有 
+            dataType: 'json',//服务器返回的数据类型 可选XML ,Json jsonp script htmltext等  
+            success: function (result) {
+                if (result.success) {
+                    $.tips("保存成功", result.success, "../GameRecord/Index");
+                }
+                else {
+                    $.tips("保存失败，失败原因:" + result.msg + "", result.success, "../GameRecord/Index");
+                }
+            },
+            error: function () {
+
+            }
+        });
+    }
+</script>

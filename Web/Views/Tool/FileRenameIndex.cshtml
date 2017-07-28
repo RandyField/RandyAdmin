@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.Content.cshtml";
+}
+
+@using EFModel;
+@using Common.Helper;
+
+<div class="row">
+    <div class='col-sm-12'>
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">文件路径</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="fileDirectory" placeholder="文件路径" class="col-xs-10 col-sm-5" />
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">文件前缀(增加)</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="filePrefix" placeholder="文件前缀(增加)" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">文件后缀(增加)</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="fileSuffix" placeholder="文件后缀(增加)" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+
+            @*按钮*@
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="button" onclick="save()">
+                        <i class="icon-ok bigger-110"></i>
+                        开始
+                    </button>
+                    &nbsp; &nbsp; &nbsp;
+											<button class="btn" type="reset">
+                                                <i class="icon-undo bigger-110"></i>
+                                                重置
+                                            </button>
+                    &nbsp; &nbsp; &nbsp;       
+                </div>
+            </div>
+            <div class="hr hr-24"></div>
+        </form>
+    </div>
+</div>
+
+<script src="~/assets/js/extentjquery/jquery.iframe.HeightReLoad.js"></script>
+<script src="~/assets/js/artDialog/dialog.js"></script>
+<script src="~/assets/js/extentjquery/jquery.input.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $.ReloadIframe("rightMain");
+    });
+
+    function save() {
+        //非空验证
+        if ($.inputValiNull($("#fileDirectory"), "提示", "文件路径不能为空")) {
+            return;
+        }
+
+        var data = {};
+        data["ParentDir"] = $("#fileDirectory").val();
+        data["stringFront"] = $("#filePrefix").val();
+        data["stringBack"] = $("#fileSuffix").val();
+        $.ajax({
+            type: 'post',//可选get  
+            url: '../Tool/RenameFile',
+            data: JSON.stringify(data),
+            contentType: "application/json", //必须有 
+            dataType: 'json',//服务器返回的数据类型 可选XML ,Json jsonp script htmltext等  
+            success: function (result) {
+                if (result.success) {
+                    $.tips("更改成功", true, "../Tool/FileRenameIndex");
+                }
+                else {
+                    $.tips("更改失败，失败原因:" + result.msg + "", true, "../Tool/FileRenameIndex");
+                }
+            },
+            error: function () {
+
+            }
+        });
+    }
+</script>

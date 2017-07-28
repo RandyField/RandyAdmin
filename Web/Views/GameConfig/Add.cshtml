@@ -1,0 +1,108 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.Content.cshtml";
+}
+
+@using EFModel;
+@using Common.Helper;
+
+<div class="row">
+    <div class='col-sm-12'>
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">游戏名称</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="gameName" placeholder="游戏名称" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">游戏编码</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="gameCode" placeholder="游戏编码" class="col-xs-10 col-sm-5" />
+                    @*  <span class="help-inline col-xs-12 col-sm-7">
+												<span class="middle">编码格式如:'game010'</span>
+											</span>*@
+                </div>
+                <div class="help-block col-xs-12 col-sm-reset inline">
+                    编码格式如:'game010'
+                </div>
+            </div>
+
+            <div class="hr hr32 hr-dotted"></div>
+
+
+            @*按钮*@
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="button" onclick="save()">
+                        <i class="icon-ok bigger-110"></i>
+                        保存
+                    </button>
+                    &nbsp; &nbsp; &nbsp;
+											<button class="btn" type="reset">
+                                                <i class="icon-undo bigger-110"></i>
+                                                重置
+                                            </button>
+                    &nbsp; &nbsp; &nbsp;
+            <button class="btn btn-danger" type="button" onclick="back()">
+                <i class="icon-reply bigger-110"></i>
+                返回
+            </button>
+
+                </div>
+            </div>
+            <div class="hr hr-24"></div>
+        </form>
+    </div>
+</div>
+
+<script src="~/assets/js/extentjquery/jquery.iframe.HeightReLoad.js"></script>
+<script src="~/assets/js/artDialog/dialog.js"></script>
+<script src="~/assets/js/extentjquery/jquery.input.js"></script>
+<script src="~/assets/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $.ReloadIframe("rightMain");
+    });
+
+    function back() {
+        $.returnBack("../GameConfig/Index");
+    }
+
+    function save() {
+        //非空验证
+        if ($.inputValiNull($("#gameName"), "提示", "游戏名称不能为空")) {
+            return;
+        }
+        if ($.inputValiNull($("#gameCode"), "提示", "游戏编码不能为空")) {
+            return;
+        }
+
+        //权限列表
+        var postData = {};
+        postData["GameName"] = $("#gameName").val();
+        postData["GameCode"] = $("#gameCode").val();
+
+        $.ajax({
+            type: 'post',//可选get  
+            url: '../../GameConfig/Add',
+            data: JSON.stringify(postData),
+            contentType: "application/json", //必须有 
+            dataType: 'json',//服务器返回的数据类型 可选XML ,Json jsonp script htmltext等  
+            success: function (result) {
+                if (result.success) {
+                    $.tips("保存成功", result.success, "../GameConfig/Index");
+                }
+                else {
+                    $.tips("保存失败，失败原因:" + result.msg + "", result.success, "../GameConfig/Index");
+                }
+            },
+            error: function () {
+
+            }
+        });
+    }
+</script>

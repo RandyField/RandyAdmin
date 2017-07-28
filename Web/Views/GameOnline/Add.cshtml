@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.Content.cshtml";
+}
+
+@using EFModel;
+@using Common.Helper;
+
+<div class="row">
+    <div class='col-sm-12'>
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">游戏</label>
+
+                <div class="col-sm-9">
+                    <select  class="col-xs-10 col-sm-5" id="gameName">
+                    </select>
+                    @*<input type="text" id="gameName" placeholder="游戏名称" class="col-xs-10 col-sm-5" />*@
+                </div>             
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">运行时间起</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="starttime" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss' })" readonly="readonly" placeholder="运行时间起" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>     
+            
+              <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">运行时间止</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="endtime" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss' })" readonly="readonly" placeholder="运行时间止" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>      
+
+            <div class="hr hr32 hr-dotted"></div>
+
+
+            @*按钮*@
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="button" onclick="save()">
+                        <i class="icon-ok bigger-110"></i>
+                        保存
+                    </button>
+                    &nbsp; &nbsp; &nbsp;
+											<button class="btn" type="reset">
+                                                <i class="icon-undo bigger-110"></i>
+                                                重置
+                                            </button>
+                    &nbsp; &nbsp; &nbsp;
+            <button class="btn btn-danger" type="button" onclick="back()">
+                <i class="icon-reply bigger-110"></i>
+                返回
+            </button>
+
+                </div>
+            </div>
+            <div class="hr hr-24"></div>
+        </form>
+    </div>
+</div>
+
+<script src="~/assets/js/extentjquery/jquery.iframe.HeightReLoad.js"></script>
+<script src="~/assets/js/artDialog/dialog.js"></script>
+<script src="~/assets/js/extentjquery/jquery.input.js"></script>
+<script src="~/assets/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $.ReloadIframe("rightMain");
+
+        $.getJSON("../../GameOnline/GetGameList", null, function (data) {
+            $.each(data, function (i, item) {
+                $("#gameName").append("<option value='" + item.value + "'>" + item.text + "</option>");
+            });
+        });
+    });
+
+    function back() {
+        $.returnBack("../GameOnline/Index");
+    }
+
+    function save() {
+        //非空验证
+        if ($.inputValiNull($("#gameName"), "提示", "请选择游戏")) {
+            return;
+        }
+        if ($.inputValiNull($("#starttime"), "提示", "请选择游戏运行起始时间")) {
+            return;
+        }
+
+        if ($.inputValiNull($("#endtime"), "提示", "请选择游戏运行结束时间")) {
+            return;
+        }
+
+        //权限列表
+        var postData = {};
+        postData["GameCode"] = $("#gameName").val();
+        postData["GameStartTime"] = $("#starttime").val();
+        postData["GameEndTime"] = $("#endtime").val();
+
+        $.ajax({
+            type: 'post',//可选get  
+            url: '../../GameOnline/Add',
+            data: JSON.stringify(postData),
+            contentType: "application/json", //必须有 
+            dataType: 'json',//服务器返回的数据类型 可选XML ,Json jsonp script htmltext等  
+            success: function (result) {
+                if (result.success) {
+                    $.tips("保存成功", result.success, "../GameOnline/Index");
+                }
+                else {
+                    $.tips("保存失败，失败原因:" + result.msg + "", result.success, "../GameOnline/Index");
+                }
+            },
+            error: function () {
+
+            }
+        });
+    }
+</script>

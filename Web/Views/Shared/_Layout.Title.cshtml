@@ -1,0 +1,19 @@
+﻿@using EFModel;
+@using Common.Helper;
+
+@{
+    SYS_CONFIG infoModel = (SYS_CONFIG)CacheHelper.GetCache("SysInfo");
+}
+<!-- .navbar-header -->
+<div class="navbar-header pull-left">
+    <a href="#" class="navbar-brand">
+        <small>
+            @Html.Raw(infoModel.SystemIcon)
+            @infoModel.SystemName
+            @Html.Raw("&nbsp;")
+            @infoModel.SystemVersion
+        </small>
+    </a>
+    <!-- /.brand -->
+</div>
+<!-- /.navbar-header -->
