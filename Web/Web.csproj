@@ -362,6 +362,7 @@
     <Content Include="Log4Net.config" />
     <Content Include="App_Code\CommonHelper.cshtml" />
     <Content Include="assets\font\fontawesome-webfont.ttf" />
+    <Content Include="DBscript\ZhpGame20170802" />
     <None Include="Properties\PublishProfiles\ZhpGameAdmin.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
