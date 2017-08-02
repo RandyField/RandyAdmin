@@ -1,0 +1,113 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.Content.cshtml";
+}
+
+@using EFModel;
+@using Common.Helper;
+
+<div class="row">
+    <div class='col-sm-12'>
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">奖品名称</label>
+
+                <div class="col-sm-9">
+                    @*                    <select  class="col-xs-10 col-sm-5" id="gameName">
+                    </select>*@
+                    <input type="text" id="awardname" placeholder="奖品名称" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">奖品编码</label>
+
+                <div class="col-sm-9">
+                    @*                    <select  class="col-xs-10 col-sm-5" id="gameName">
+                    </select>*@
+                    <input type="text" id="awardcode" placeholder="奖品名称" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+            <div class="hr hr32 hr-dotted"></div>
+
+
+            @*按钮*@
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="button" onclick="save()">
+                        <i class="icon-ok bigger-110"></i>
+                        保存
+                    </button>
+                    &nbsp; &nbsp; &nbsp;
+											<button class="btn" type="reset">
+                                                <i class="icon-undo bigger-110"></i>
+                                                重置
+                                            </button>
+                    &nbsp; &nbsp; &nbsp;
+            <button class="btn btn-danger" type="button" onclick="back()">
+                <i class="icon-reply bigger-110"></i>
+                返回
+            </button>
+
+                </div>
+            </div>
+            <div class="hr hr-24"></div>
+        </form>
+    </div>
+</div>
+
+<script src="~/assets/js/extentjquery/jquery.iframe.HeightReLoad.js"></script>
+<script src="~/assets/js/artDialog/dialog.js"></script>
+<script src="~/assets/js/extentjquery/jquery.input.js"></script>
+<script src="~/assets/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $.ReloadIframe("rightMain");
+
+        //$.getJSON("../../GameAward/GetGameList", null, function (data) {
+        //    $.each(data, function (i, item) {
+        //        $("#gameName").append("<option value='" + item.value + "'>" + item.text + "</option>");
+        //    });
+        //});
+    });
+
+    function back() {
+        $.returnBack("../GameAward/Index");
+    }
+
+    function save() {
+        //非空验证    
+        if ($.inputValiNull($("#awardname"), "提示", "请输入奖品名称")) {
+            return;
+        }
+
+        if ($.inputValiNull($("#awardcode"), "提示", "请输入奖品编码")) {
+            return;
+        }
+
+        //权限列表
+        var postData = {};
+        postData["AwardName"] = $("#awardname").val();
+        postData["AwardCode"] = $("#awardcode").val();
+
+        $.ajax({
+            type: 'post',//可选get  
+            url: '../../GameAward/Add',
+            data: JSON.stringify(postData),
+            contentType: "application/json", //必须有 
+            dataType: 'json',//服务器返回的数据类型 可选XML ,Json jsonp script htmltext等  
+            success: function (result) {
+                if (result.success) {
+                    $.tips("保存成功", result.success, "../GameAward/Index");
+                }
+                else {
+                    $.tips("保存失败，失败原因:" + result.msg + "", result.success, "../GameAward/Index");
+                }
+            },
+            error: function () {
+
+            }
+        });
+    }
+</script>

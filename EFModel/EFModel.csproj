@@ -96,6 +96,9 @@
     <Compile Include="SYS_USER_ROLE_RELATION.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Zhp_AwardCreate.cs">
+      <DependentUpon>DbModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Zhp_AwardsLimited.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>

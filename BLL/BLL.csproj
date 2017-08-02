@@ -68,6 +68,7 @@
     <Compile Include="SYS_ROLE_BLL.cs" />
     <Compile Include="SYS_USERINFO_BLL.cs" />
     <Compile Include="TRF_WeChatUserInfo_BLL.cs" />
+    <Compile Include="Zhp_AwardCreate_BLL.cs" />
     <Compile Include="Zhp_AwardsLimited_BLL.cs" />
     <Compile Include="Zhp_GameApi_BLL.cs" />
     <Compile Include="Zhp_GameAwards_BLL.cs" />

@@ -1,4 +1,5 @@
-﻿using Common.Helper;
+﻿using Common.Enum;
+using Common.Helper;
 using DAL;
 using EFModel;
 using Interface;
@@ -10,25 +11,25 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-namespace BLL  
+namespace BLL
 {
-	///<summary>
-	 	///Zhp_GameAwards_BLL
-		///Author:ZhangDeng
-	///</summary>
-	public class Zhp_GameAwards_BLL
-	{	
-		///<summary>
-		///create bll instance
-		///</summary>
-		private static Zhp_GameAwards_BLL instance;
-		
-		/// <summary>
+    ///<summary>
+    ///Zhp_GameAwards_BLL
+    ///Author:ZhangDeng
+    ///</summary>
+    public class Zhp_GameAwards_BLL
+    {
+        ///<summary>
+        ///create bll instance
+        ///</summary>
+        private static Zhp_GameAwards_BLL instance;
+
+        /// <summary>
         /// 私有构造函数，该类无法被实例化
         /// </summary>
         private Zhp_GameAwards_BLL() { }
-        
-         /// <summary>
+
+        /// <summary>
         /// 接口
         /// </summary>
         private static I_Zhp_GameAwards_DAL idal;
@@ -63,7 +64,7 @@ namespace BLL
 
             return instance;
         }
-        
+
         /// <summary>
         /// 根据主键获取实体
         /// </summary>
@@ -82,13 +83,20 @@ namespace BLL
             }
             return model;
         }
-        
-         /// <summary>
+
+        public DataTable GetAwardList() 
+        {
+            string sql = @"SELECT *  FROM  Zhp_GameAwards";
+            DataTable dt = idal.SqlQueryForDataTatable(sql);
+            return dt;
+        }
+
+        /// <summary>
         /// 根据条件获取实体列表
         /// </summary>
         /// <param name="exp">条件</param>
         /// <returns></returns>
-         public List<Zhp_GameAwards> GetList(Expression<Func<Zhp_GameAwards, bool>> exp)
+        public List<Zhp_GameAwards> GetList(Expression<Func<Zhp_GameAwards, bool>> exp)
         {
             List<Zhp_GameAwards> list = null;
             try
@@ -101,55 +109,79 @@ namespace BLL
             }
             return list;
         }
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public DataTable GetList(string code)
+        {
+            string sql = @"SELECT *  FROM  Zhp_GameAwards where AwardCode='" + code + "'";
+            DataTable dt = idal.SqlQueryForDataTatable(sql);
+            return dt;
+        }
+
         /// <summary>
         /// 新增
         /// </summary>
         /// <param name="model">待新增实体</param>
         /// <returns></returns>
-        public bool Add(Zhp_GameAwards model,out string msg)
+        public bool Add(Zhp_GameAwards model, out string msg)
         {
             bool success = false;
             try
             {
-               idal.Add(model);
-               idal.Save();
-               success = true;
-               msg = "保存成功";
+                DataTable dt = new DataTable();
+                dt = GetList(model.AwardCode);
+
+                if (dt!=null && dt.Rows.Count>0)
+                {
+                    success = false;
+                    msg = "奖品编码已存在";
+                }
+                else
+                {
+                    idal.Add(model);
+                    idal.Save();
+                    success = true;
+                    msg = "保存成功";
+                }
+               
             }
             catch (Exception ex)
             {
                 success = false;
-                msg = "保存失败";
+                msg = "发生异常";
                 Logger.Error(string.Format("Zhp_GameAwards_BLL 新增异常,异常信息:{0}", ex.ToString()));
             }
             return success;
         }
 
-		/// <summary>
+        /// <summary>
         /// 删除
         /// </summary>
         /// <param name="model">待删除实体</param>
         /// <returns></returns>
-		public bool Remove(Zhp_GameAwards model,out string msg)
+        public bool Remove(Zhp_GameAwards model, out string msg)
         {
             bool success = false;
             try
             {
-               idal.Delete(model);
-               idal.Save();
-               success = true;
-               msg = "删除成功";
+                idal.Delete(model);
+                idal.Save();
+                success = true;
+                msg = "删除成功";
             }
             catch (Exception ex)
             {
                 success = false;
-                 msg = "删除失败";
+                msg = "删除失败";
                 Logger.Error(string.Format("Zhp_GameAwards_BLL 删除异常,异常信息:{0}", ex.ToString()));
             }
             return success;
         }
-        
+
         /// <summary>
         /// 删除-注意主键要与数据库类型相同
         /// </summary>
@@ -160,8 +192,8 @@ namespace BLL
         {
             bool success = false;
             try
-            {             
-                idal.Delete(id);
+            {
+                idal.Delete(Convert.ToInt32(id));
                 idal.Save();
                 success = true;
                 msg = "删除成功";
@@ -197,7 +229,7 @@ namespace BLL
             }
             return success;
         }
-        
+
         /// <summary>
         /// 编辑
         /// </summary>
@@ -208,20 +240,20 @@ namespace BLL
             bool success = false;
             try
             {
-               idal.Edit(model);
-               idal.Save();
-               success = true;
-               msg = "保存成功";
+                idal.Edit(model);
+                idal.Save();
+                success = true;
+                msg = "保存成功";
             }
             catch (Exception ex)
             {
-           	    msg = "保存失败";
+                msg = "保存失败";
                 success = false;
                 Logger.Error(string.Format("Zhp_GameAwards_BLL 编辑异常,异常信息:{0}", ex.ToString()));
             }
             return success;
         }
-        
+
         /// <summary>
         /// 按条件更新
         /// </summary>
@@ -233,20 +265,20 @@ namespace BLL
             bool success = false;
             try
             {
-               idal.update(exp, dic);
-               idal.Save();
-               success = true;
-               msg = "保存成功";
+                idal.update(exp, dic);
+                idal.Save();
+                success = true;
+                msg = "保存成功";
             }
             catch (Exception ex)
             {
-            	msg = "保存失败";
+                msg = "保存失败";
                 success = false;
                 Logger.Error(string.Format("Zhp_GameAwards_BLL 按条件更新异常,异常信息:{0}", ex.ToString()));
             }
             return success;
         }
-        
+
         /// <summary>
         /// 分页查询
         /// </summary>
@@ -256,7 +288,7 @@ namespace BLL
         /// <param name="recordCount"></param>
         /// <param name="pageCount"></param>
         /// <returns></returns>
-        public List<Zhp_GameAwards> PageQuery<TKey>(int pageIndex, int pageSize, Expression<Func<Zhp_GameAwards, bool>> whLamdba,Expression<Func<Zhp_GameAwards, TKey>> orderByLamdba, out int recordCount, out int pageCount)
+        public List<Zhp_GameAwards> PageQuery<TKey>(int pageIndex, int pageSize, Expression<Func<Zhp_GameAwards, bool>> whLamdba, Expression<Func<Zhp_GameAwards, TKey>> orderByLamdba, out int recordCount, out int pageCount)
         {
             List<Zhp_GameAwards> list = null;
             try
@@ -275,8 +307,8 @@ namespace BLL
             }
             return list;
         }
-        
-         /// <summary>
+
+        /// <summary>
         /// 分页查询
         /// </summary>
         /// <param name="modle"></param>
@@ -285,36 +317,42 @@ namespace BLL
         /// <param name="recordCount"></param>
         /// <param name="pageCount"></param>
         /// <returns></returns>
-        public DataTable PageQuery(Zhp_GameAwards modle,int pageIndex, int pageSize, out int recordCount, out int pageCount)
+        public DataTable PageQuery(Zhp_GameAwards modle, int pageIndex, int pageSize, out int recordCount, out int pageCount)
         {
             DataTable dt = new DataTable();
             try
             {
                 SearchCondition condition = new SearchCondition();
-                if (modle!=null)
+                if (modle != null)
                 {
                     #region 组装查询条件
-                                
-                    //if (!string.IsNullOrWhiteSpace(modle.PlayerNickname))
-                    //{
-                    //    condition.AddCondition("a.PlayerNickname", modle.PlayerNickname, SqlOperator.Like, true);                        
-                    //}
+
+                    if (!string.IsNullOrWhiteSpace(modle.AwardName))
+                    {
+                        condition.AddCondition("AwardName", modle.AwardName, SqlOperator.Like, true);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(modle.AwardCode))
+                    {
+                        condition.AddCondition("AwardCode", modle.AwardCode, SqlOperator.Like, true);
+                    }
+
 
                     #endregion
                 }
                 PagerInfo pager = new PagerInfo();
                 #region 组装存储过程调用参数
-                
-                
-                //pager.curPage = pageIndex;
-                //pager.pageSize = pageSize;
-                //pager.isDescending = true;
-                //pager.fields = "a.*,c.GameName";
-                //pager.sortField = "a.UploadTime";
-                //pager.indexField = "a.ID";
-                //pager.where = null;
-                //pager.condition = condition;
-                //pager.tableName = "[ZhpGame].[dbo].[Zhp_GameRecord] a left join  [Zhp_OnlineGame] b on a.Gameid=b.Gameid left join [Zhp_GameConfig] c on b.GameCode= c.GameCode ";
+
+
+                pager.curPage = pageIndex;
+                pager.pageSize = pageSize;
+                pager.isDescending = true;
+                pager.fields = "*";
+                pager.sortField = "AwardId";
+                pager.indexField = "AwardId";
+                pager.where = null;
+                pager.condition = condition;
+                pager.tableName = "Zhp_GameAwards";
 
                 #endregion
                 dt = idal.PageQuery(pager, out recordCount, out pageCount);
@@ -327,5 +365,5 @@ namespace BLL
             }
             return dt;
         }
-	}
+    }
 }

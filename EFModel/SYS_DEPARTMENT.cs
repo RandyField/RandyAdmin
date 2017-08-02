@@ -22,7 +22,7 @@ namespace EFModel
         public string ParentDepart { get; set; }
         public Nullable<int> Isdelete { get; set; }
         public string Remark { get; set; }
-        public string UpdateTime { get; set; }
         public string Alias { get; set; }
+        public string UpdateTime { get; set; }
     }
 }

@@ -258,6 +258,21 @@ create table Zhp_WxUserInfo (
 )
 go
 
+/*==============================================================*/
+/* Table: Zhp_AwardCreate                                       */
+/*==============================================================*/
+create table Zhp_AwardCreate (
+   ID                   int                  not null,
+   Gamename             nvarchar(32)         null,
+   Awardid              int                  null,
+   Nickname             nvarchar(50)         null,
+   Openid               nvarchar(100)        null,
+   ReceiveTime          datetime             null,
+   CreateTime           datetime             null,
+   Description          text                 null,
+   constraint PK_ZHP_AWARDCREATE primary key (ID)
+)
+
 --新增权限，列出所有菜单，一个菜单4个复选框，用户管理，系统管理，平台管理， 各自绑定增删改查 就出来一个权限
 
 --新增角色，复选框多个权限，所有权限

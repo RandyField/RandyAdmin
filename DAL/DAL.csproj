@@ -62,6 +62,7 @@
     <Compile Include="SYS_ROLE_DAL.cs" />
     <Compile Include="SYS_USERINFO_DAL.cs" />
     <Compile Include="TRF_WeChatUserInfo_DAL.cs" />
+    <Compile Include="Zhp_AwardCreate_DAL.cs" />
     <Compile Include="Zhp_AwardsLimited_DAL.cs" />
     <Compile Include="Zhp_GameApi_DAL.cs" />
     <Compile Include="Zhp_GameAwards_DAL.cs" />

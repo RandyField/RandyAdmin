@@ -15,7 +15,7 @@ namespace EFModel
     public partial class Zhp_AwardsLimited
     {
         public int Id { get; set; }
-        public Nullable<int> AwardId { get; set; }
+        public string AwardCode { get; set; }
         public Nullable<int> Gameid { get; set; }
         public string GameSoreEdge { get; set; }
         public string AwardImage { get; set; }

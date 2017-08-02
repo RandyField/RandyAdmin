@@ -26,14 +26,15 @@ namespace EFModel
         }
     
         public DbSet<SYS_CONFIG> SYS_CONFIG { get; set; }
-        public DbSet<SYS_MENU> SYS_MENU { get; set; }
         public DbSet<SYS_DEPARTMENT> SYS_DEPARTMENT { get; set; }
+        public DbSet<SYS_MENU> SYS_MENU { get; set; }
         public DbSet<SYS_PERMISSION> SYS_PERMISSION { get; set; }
-        public DbSet<SYS_ROLE> SYS_ROLE { get; set; }
-        public DbSet<SYS_USERINFO> SYS_USERINFO { get; set; }
         public DbSet<SYS_PERMISSION_MENU_RELATION> SYS_PERMISSION_MENU_RELATION { get; set; }
+        public DbSet<SYS_ROLE> SYS_ROLE { get; set; }
         public DbSet<SYS_ROLE_PERMISSION_RELATION> SYS_ROLE_PERMISSION_RELATION { get; set; }
         public DbSet<SYS_USER_ROLE_RELATION> SYS_USER_ROLE_RELATION { get; set; }
+        public DbSet<SYS_USERINFO> SYS_USERINFO { get; set; }
+        public DbSet<Zhp_AwardCreate> Zhp_AwardCreate { get; set; }
         public DbSet<Zhp_AwardsLimited> Zhp_AwardsLimited { get; set; }
         public DbSet<Zhp_GameApi> Zhp_GameApi { get; set; }
         public DbSet<Zhp_GameAwards> Zhp_GameAwards { get; set; }

@@ -27,6 +27,7 @@ namespace Web.Controllers
         /// <param name="ParentDir"></param>
         /// <param name="stringFront"></param>
         /// <param name="stringBack"></param>
+        [HttpPost]
         public ActionResult RenameFile(string ParentDir, string stringFront, string stringBack)
         {
             try

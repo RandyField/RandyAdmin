@@ -12,11 +12,16 @@ namespace EFModel
     using System;
     using System.Collections.Generic;
     
-    public partial class Zhp_GameAwards
+    public partial class Zhp_AwardCreate
     {
-        public int AwardId { get; set; }
+        public int ID { get; set; }
+        public Nullable<int> Gameid { get; set; }
+        public string Gamename { get; set; }
         public string AwardCode { get; set; }
-        public string AwardName { get; set; }
+        public string Nickname { get; set; }
+        public string Openid { get; set; }
+        public Nullable<System.DateTime> ReceiveTime { get; set; }
+        public Nullable<System.DateTime> CreateTime { get; set; }
         public string Description { get; set; }
     }
 }

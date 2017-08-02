@@ -131,6 +131,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attribute\RoleAuthorizeAttribute.cs" />
+    <Compile Include="Controllers\AwardConfigController.cs" />
+    <Compile Include="Controllers\GameAwardController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\GameConfigController.cs" />
     <Compile Include="Controllers\GameOnlineController.cs" />
@@ -351,6 +353,7 @@
     <Content Include="DBscript\ZhpGame建库.sql" />
     <Content Include="DBscript\ZhpGame建表.sql" />
     <Content Include="DBscript\ZhpGame表插入数据.sql" />
+    <Content Include="DBscript\分页存储过程.sql" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="assets\font\fontawesome-webfont.woff">
@@ -358,6 +361,7 @@
     </Content>
     <Content Include="Log4Net.config" />
     <Content Include="App_Code\CommonHelper.cshtml" />
+    <Content Include="assets\font\fontawesome-webfont.ttf" />
     <None Include="Properties\PublishProfiles\ZhpGameAdmin.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
@@ -409,6 +413,10 @@
     <Content Include="Views\GameOnline\Index.cshtml" />
     <Content Include="Views\GameOnline\Add.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\GameAward\Index.cshtml" />
+    <Content Include="Views\GameAward\Add.cshtml" />
+    <Content Include="Views\AwardConfig\Add.cshtml" />
+    <Content Include="Views\AwardConfig\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
