@@ -8,6 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
+using Web.Attribute;
 
 namespace Web.Controllers
 {
@@ -16,6 +17,7 @@ namespace Web.Controllers
 
         SYS_PERMISSION_BLL bll = SYS_PERMISSION_BLL.getInstance();
 
+        [AuthorityFilter]
         /// <summary>
         /// 加载页面
         /// </summary>

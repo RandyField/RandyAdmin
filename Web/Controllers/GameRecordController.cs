@@ -9,6 +9,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
+using Web.Attribute;
 
 namespace Web.Controllers
 {
@@ -16,6 +17,7 @@ namespace Web.Controllers
     {
         Zhp_GameRecord_BLL bll = Zhp_GameRecord_BLL.getInstance();
 
+        [AuthorityFilter]
         /// <summary>
         /// 加载
         /// </summary>

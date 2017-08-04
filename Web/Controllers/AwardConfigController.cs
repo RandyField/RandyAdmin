@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Web.Attribute;
 
 namespace Web.Controllers
 {
@@ -14,6 +15,7 @@ namespace Web.Controllers
     {
         Zhp_AwardsLimited_BLL bll = Zhp_AwardsLimited_BLL.getInstance();
 
+        [AuthorityFilter]
         /// <summary>
         /// 加载
         /// </summary>

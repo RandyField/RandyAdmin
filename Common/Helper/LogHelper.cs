@@ -120,7 +120,7 @@ namespace  Common.Helper
         /// </summary>
         /// <param name="message">写入的内容</param>
         /// <param name="exception">错误类型</param>
-        public void Error(object message, Exception exception)
+        public  void Error(object message, Exception exception)
         {
             if (mLog.IsErrorEnabled)
                 WriteLog(Level.Error, message, exception);

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Web.Attribute;
 
 namespace Web.Controllers
 {
@@ -13,7 +14,7 @@ namespace Web.Controllers
     {
         //
         // GET: /Home/
-
+        [AuthorityFilter]
         public ActionResult Index()
         {
 //            for (int x = 63; x < 10000; x = x + 63)
@@ -45,14 +46,14 @@ namespace Web.Controllers
             //CacheHelper.SetCache("SysInfo", sysmodel);
             //#endregion
             //return View();
-            if (CacheHelper.GetCache("FirstMenu") != null)
-            {
+            //if (CacheHelper.GetCache("FirstMenu") != null)
+            //{
                 return View();
-            }
-            else
-            {
-                return RedirectToRoute(new { controller = "Login", action = "Index" });
-            }
+            //}
+            //else
+            //{
+            //    return RedirectToRoute(new { controller = "Login", action = "Index" });
+            //}
             //加载菜单
 
 

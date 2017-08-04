@@ -130,6 +130,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Attribute\AuthorityFilterAttribute.cs" />
+    <Compile Include="Attribute\CustomAuthAttribute.cs" />
+    <Compile Include="Attribute\CustomExceptionAttribute.cs" />
     <Compile Include="Attribute\RoleAuthorizeAttribute.cs" />
     <Compile Include="Controllers\AwardConfigController.cs" />
     <Compile Include="Controllers\GameAwardController.cs" />

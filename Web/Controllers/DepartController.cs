@@ -9,6 +9,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
+using Web.Attribute;
 using Web.Models;
 
 namespace Web.Controllers
@@ -19,6 +20,7 @@ namespace Web.Controllers
         // GET: /Depart/
         SYS_DEPARTMENT_BLL bll = SYS_DEPARTMENT_BLL.getInstance();
 
+        [AuthorityFilter]
         public ActionResult Index()
         {
             ViewData["FirstMenu"] = "系统管理";
