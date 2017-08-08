@@ -1,0 +1,242 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.Content.cshtml";
+}
+<div class="row">
+    <div class='col-sm-12'>
+        <div id='sample-table-2_filter' class='dataTables_filter'>
+            <label>
+                角色名称:
+                                <input aria-controls='sample-table-2' id="rolename" type='text'>
+            </label>
+            <button class='btn btn-purple btn-sm' id="searchBtn">
+                <i class='icon-searchicon-on-right bigger-110'></i>
+                搜索 
+            </button>
+            <button class='btn btn-sm' onclick='ShowAdd()'>
+                <i class='icon-pencil align-top bigger-125'></i>
+                新增 
+            </button>
+        </div>
+    </div>
+
+    <div class="col-xs-12">
+        <div class="table-header">
+            查询结果
+        </div>
+
+        <div class="table-responsive">
+            <table id="sample-table-2" class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th class="center">
+                            <label>
+                                <input type="checkbox" class="ace" />
+                                <span class="lbl"></span>
+                            </label>
+                        </th>
+                        <th>角色名称</th>
+                        <th>
+                            <i class="icon-time bigger-110 hidden-480"></i>
+                            创建时间
+                        </th>
+                        <th class="hidden-480 bigger-110">操作</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<!--jquery.dataTables-->
+
+@Html.Partial("_ListLayout.DeleteOperation")
+<!-- datatable操作按钮脚本-->
+@*<script src="~/assets/js/jquery.iframe.HeightReLoad.js"></script>*@
+<!-- ace scripts -->
+<script src="~/assets/js/artDialog/dialog.js"></script>
+<script src="~/assets/js/extentjquery/jquery.input.js"></script>
+<script src="~/assets/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+    var showaddurl = "../Role/ShowAdd/";
+    var addurl = "../Role/Add/";
+    var searchurl = "../Role/Search/";
+    var showediturl = "../Role/ShowEidt/";
+    var deleturl = "../Role/Delete";
+    var backurl = "../Role/Index";
+    function ShowAdd() {
+        var iframe = parent.document.getElementById("rightMain");
+        iframe.src = showaddurl;
+    }
+
+    //$.ReloadIframe("right");
+    jQuery(function ($) {
+        //$.getJSON("../../Role/GetGameList", null, function (data) {
+        //    $.each(data, function (i, item) {
+        //        $("#gameName").append("<option value='" + item.value + "'>" + item.text + "</option>");
+        //    });
+        //});
+        //$.ReloadIframe("rightMain");
+        var oDataTable = $('#sample-table-2').dataTable({
+            "bProcessing": true,//设置异步请求时，是否有等待框 开启读取服务器数据时显示正在加载中……特别是大数据量的时候，开启此功能比较好  
+            "bServerSide": true,//指定服务端分页，必须的属性！
+            "sAjaxDataProp": "aaData",//是服务器分页的标志，必须有   
+            "sAjaxSource": searchurl, //获取数据的ajax方法的URL
+            "bPaginate": true,//是否支持分页,分页工具条显示
+            "sPaginationType": "bootstrap",//分页工具条样式  -bootstrap
+            "bStateSave": false, //是否打开客户端状态记录功能,此功能在ajax刷新纪录的时候不会将个性化设定回复为初始化状态  -保存状态到cookie  
+            "bScrollCollapse": true, //当显示的数据不足以支撑表格的默认的高度  
+            "bFilter": false, //搜索栏  
+            "bSort": false, //是否支持排序功能  
+            "bInfo": true, //显示表格信息  
+            "bAutoWidth": true, //自适应宽度  
+            "bJQueryUI": false,//是否开启主题  
+            "bDestroy": true,
+            "isShowSearch": false,
+            "bLengthChange": true, //用户不可改变每页显示数量 每页显示的记录数
+            "iDisplayLength": 15, //每页显示8条数据
+            "iDisplayStart": 0,
+            "fnServerData": fnAjaxRequest,//获取数据的处理函数   
+            //"aLengthMenu": [
+            //    [5, 15, 20, -1],
+            //    [5, 15, 20, "All"] // change per page values here
+            //],
+            "aLengthMenu": [
+               [5, 15, 20, 50],
+               [5, 15, 20, 50]
+            ],
+            //查询参数 筛选参数
+            "fnServerParams": function (aoData) {
+                //aoData.push({ "name": "GameName", "value": $("#gamename").val() });
+                aoData.push({ "name": "RoleName", "value": $("#rolename").val() });
+                //aoData.push({ "name": "GameStartTime", "value": $("#starttime").val() });
+                //aoData.push({ "name": "GameEndTime", "value": $("#endtime").val() });
+            },
+            //初始化要显示的列 
+            "aoColumns": [
+                {
+                    "mDataProp": "RoleID",//获取列数据，跟服务器返回字段一致  
+                    "sClass": "center",//显示样式  
+                    "mRender": function (data, type, rowData) {//返回自定义的样式  
+                        return "<label><input type='checkbox' class='ace' value='" + rowData.RoleID + "' /><span class='lbl'></span></label>"
+                    }
+                }, {
+                    "mDataProp": "RoleName"
+                }, {
+                    "mDataProp": "CreateTime",
+                    "mRender": function (data, type, full) {
+                        return new Date(data)//处理时间显示  
+                        .toLocaleString();
+                    }
+                }, {
+                    "sDefaultContent": "",//不绑定任何后端列       
+                    "sClass": "operation",
+                    "mRender": function (data, type, rowData) {
+                        return '<span data-id="' + rowData.RoleID + '" style="display:none"></span>' + $("#handleBtn").html();
+                    }
+                }],
+            "oLanguage": {
+                "sSearch": "搜索",
+                "sProcessing": "正在加载中......",
+                "sEmptyTable": "查询结果为空！",
+                "sLengthMenu": "每页显示 _MENU_ 条记录",
+                "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录",
+                "sZeroRecords": "没有检索到数据",
+                "sInfoEmpty": "",
+                "sInfoFiltered": "",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上一页",
+                    "sNext": "下一页",
+                    "sLast": "末页"
+                }
+            }
+        });
+
+        $("#searchBtn").bind('click', function () {
+            var ii = layer.load();
+            oDataTable.fnClearTable();
+            layer.close(ii);
+        });
+
+        function fnAjaxRequest(sSource, aoData, fnCallback) {
+            $.ajax({
+                "dataType": 'json',
+                "type": "get",
+                "url": sSource,
+                "data": aoData,
+                "success": function (resp) {
+                    if (resp) {
+                        fnCallback(resp);
+                        $("td.operation").each(function () {
+                            var id = $(this).find("span").attr("data-id");
+                            $(this).find("a").each(function () {
+                                $(this).bind("click", function () {
+                                    if ($(this).attr("data-type") == "view") {
+
+                                    }
+
+                                    if ($(this).attr("data-type") == "edit") {
+                                        var iframe = parent.document.getElementById("rightMain");
+                                        iframe.src = showediturl + "?id=" + id + "";
+                                    }
+
+                                    if ($(this).attr("data-type") == "delete") {
+                                        delet(id);
+                                    }
+                                });
+                            });
+                        });
+                    }
+                }
+            });
+        }
+
+        function delet(id) {
+            var data = {};
+            data["id"] = id;
+            $.ajax({
+                type: 'post',//可选get  
+                url: deleturl,
+                data: JSON.stringify(data),
+                contentType: "application/json", //必须有 
+                dataType: 'json',//服务器返回的数据类型 可选XML ,Json jsonp script htmltext等  
+                success: function (result) {
+                    if (result.success) {
+                        $.tips("删除成功", result.success, backurl);
+                        //oDataTable.fnClearTable();
+                    }
+                    else {
+                        $.tips("删除失败，失败原因:" + result.msg + "", result.success, backurl);
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+
+        $('table th input:checkbox').on('click', function () {
+            var that = this;
+            $(this).closest('table').find('tr > td:first-child input:checkbox')
+                .each(function () {
+                    this.checked = that.checked;
+                    $(this).closest('tr').toggleClass('selected');
+                });
+        });
+
+
+        $('[data-rel="tooltip"]').tooltip({ placement: tooltip_placement });
+        function tooltip_placement(context, source) {
+            var $source = $(source);
+            var $parent = $source.closest('table')
+            var off1 = $parent.offset();
+            var w1 = $parent.width();
+
+            var off2 = $source.offset();
+            var w2 = $source.width();
+
+            if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
+            return 'left';
+        }
+    })
+</script>

@@ -32,8 +32,8 @@ namespace Web.Attribute
         {
             if (filterContext.Exception == null)
             {
-                filterContext.HttpContext.Response.Write(
-                   "123");
+                //filterContext.HttpContext.Response.Write(
+                //   "123");
             } 
         }
     }

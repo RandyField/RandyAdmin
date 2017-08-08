@@ -1,4 +1,5 @@
-﻿using Common.Helper;
+﻿using Common.Enum;
+using Common.Helper;
 using DAL;
 using EFModel;
 using Interface;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -82,6 +84,270 @@ namespace BLL
 
             return dt;
            
+        }
+
+        /// <summary>
+        /// 根据主键获取实体
+        /// </summary>
+        /// <param name="pkId">主键</param>
+        /// <returns></returns>
+        public SYS_ROLE GetById(string pkId)
+        {
+            SYS_ROLE model = null;
+            try
+            {
+                model = idal.Find(Convert.ToInt32(pkId));
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format("SYS_ROLE_BLL 根据主键获取实体异常,异常信息:{0}", ex.ToString()));
+            }
+            return model;
+        }
+
+        /// <summary>
+        /// 根据条件获取实体列表
+        /// </summary>
+        /// <param name="exp">条件</param>
+        /// <returns></returns>
+        public List<SYS_ROLE> GetList(Expression<Func<SYS_ROLE, bool>> exp)
+        {
+            List<SYS_ROLE> list = null;
+            try
+            {
+                list = idal.FindBy(exp).ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format("SYS_ROLE_BLL 根据条件获取实体列表异常,异常信息:{0}", ex.ToString()));
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 新增
+        /// </summary>
+        /// <param name="model">待新增实体</param>
+        /// <returns></returns>
+        public bool Add(SYS_ROLE model, out string msg)
+        {
+            bool success = false;
+            try
+            {
+                idal.Add(model);
+                idal.Save();
+                success = true;
+                msg = "保存成功";
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                msg = "保存失败";
+                Logger.Error(string.Format("SYS_ROLE_BLL 新增异常,异常信息:{0}", ex.ToString()));
+            }
+            return success;
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="model">待删除实体</param>
+        /// <returns></returns>
+        public bool Remove(SYS_ROLE model, out string msg)
+        {
+            bool success = false;
+            try
+            {
+                idal.Delete(model);
+                idal.Save();
+                success = true;
+                msg = "删除成功";
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                msg = "删除失败";
+                Logger.Error(string.Format("SYS_ROLE_BLL 删除异常,异常信息:{0}", ex.ToString()));
+            }
+            return success;
+        }
+
+        /// <summary>
+        /// 删除-注意主键要与数据库类型相同
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public bool Remove(string id, out string msg)
+        {
+            bool success = false;
+            try
+            {
+                idal.Delete(id);
+                idal.Save();
+                success = true;
+                msg = "删除成功";
+            }
+            catch (Exception ex)
+            {
+                msg = "删除失败";
+                success = false;
+                Logger.Error(string.Format("SYS_ROLE_BLL 删除异常,异常信息:{0}", ex.ToString()));
+            }
+            return success;
+        }
+
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <returns></returns>
+        public bool BulkRemove(Expression<Func<Zhp_GameRecord, bool>> exp, out string msg)
+        {
+            bool success = false;
+            try
+            {
+                idal.Delete(exp);
+                idal.Save();
+                success = true;
+                msg = "删除成功";
+            }
+            catch (Exception ex)
+            {
+                msg = "删除失败";
+                success = false;
+                Logger.Error(string.Format("SYS_ROLE_BLL 删除异常,异常信息:{0}", ex.ToString()));
+            }
+            return success;
+        }
+
+        /// <summary>
+        /// 编辑
+        /// </summary>
+        /// <param name="model">待编辑实体</param>
+        /// <returns></returns>
+        public bool Edit(SYS_ROLE model, out string msg)
+        {
+            bool success = false;
+            try
+            {
+                idal.Edit(model);
+                idal.Save();
+                success = true;
+                msg = "保存成功";
+            }
+            catch (Exception ex)
+            {
+                msg = "保存失败";
+                success = false;
+                Logger.Error(string.Format("SYS_ROLE_BLL 编辑异常,异常信息:{0}", ex.ToString()));
+            }
+            return success;
+        }
+
+        /// <summary>
+        /// 按条件更新
+        /// </summary>
+        /// <param name="exp">更新条件</param>
+        /// <param name="dic">更新值</param>
+        /// <returns></returns>
+        public bool Update(Expression<Func<SYS_ROLE, bool>> exp, Dictionary<string, object> dic, out string msg)
+        {
+            bool success = false;
+            try
+            {
+                idal.update(exp, dic);
+                idal.Save();
+                success = true;
+                msg = "保存成功";
+            }
+            catch (Exception ex)
+            {
+                msg = "保存失败";
+                success = false;
+                Logger.Error(string.Format("SYS_ROLE_BLL 按条件更新异常,异常信息:{0}", ex.ToString()));
+            }
+            return success;
+        }
+
+        /// <summary>
+        /// 分页查询
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="whLamdba"></param>
+        /// <param name="recordCount"></param>
+        /// <param name="pageCount"></param>
+        /// <returns></returns>
+        public List<SYS_ROLE> PageQuery<TKey>(int pageIndex, int pageSize, Expression<Func<SYS_ROLE, bool>> whLamdba, Expression<Func<SYS_ROLE, TKey>> orderByLamdba, out int recordCount, out int pageCount)
+        {
+            List<SYS_ROLE> list = null;
+            try
+            {
+                if (pageIndex == 0)
+                {
+                    pageIndex = 1;
+                }
+                list = idal.PageQuery(pageIndex, pageSize, out recordCount, out pageCount, whLamdba, orderByLamdba);
+            }
+            catch (Exception ex)
+            {
+                recordCount = 0;
+                pageCount = 0;
+                Logger.Error(string.Format("SYS_ROLE_BLL 分页查询异常，异常信息：{0}", ex.ToString()));
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 分页查询
+        /// </summary>
+        /// <param name="modle"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="recordCount"></param>
+        /// <param name="pageCount"></param>
+        /// <returns></returns>
+        public DataTable PageQuery(SYS_ROLE modle, int pageIndex, int pageSize, out int recordCount, out int pageCount)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SearchCondition condition = new SearchCondition();
+                if (modle != null)
+                {
+                    #region 组装查询条件
+
+                    if (!string.IsNullOrWhiteSpace(modle.RoleName))
+                    {
+                        condition.AddCondition("RoleName", modle.RoleName, SqlOperator.Like, true);
+                    }
+
+                    #endregion
+                }
+                PagerInfo pager = new PagerInfo();
+                #region 组装存储过程调用参数
+
+
+                pager.curPage = pageIndex;
+                pager.pageSize = pageSize;
+                pager.isDescending = true;
+                pager.fields = "*";
+                pager.sortField = "RoleID";
+                pager.indexField = "RoleID";
+                pager.where = null;
+                pager.condition = condition;
+                pager.tableName = "SYS_ROLE";
+
+                #endregion
+                dt = idal.PageQuery(pager, out recordCount, out pageCount);
+            }
+            catch (Exception ex)
+            {
+                recordCount = 0;
+                pageCount = 0;
+                Logger.Error(string.Format("SYS_ROLE_BLL 分页查询异常，异常信息：{0}", ex.ToString()));
+            }
+            return dt;
         }
     }
 }
