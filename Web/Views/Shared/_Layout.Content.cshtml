@@ -108,8 +108,17 @@
 
     <script src="~/assets/js/ace-elements.min.js"></script>
     <script src="~/assets/js/ace.min.js"></script>
-    <script src="~/assets/js/layer/layer.js"></script>
+   
     <!-- inline scripts related to this page -->
+
+    <!--扩展 -->
+    <script src="~/assets/js/layer/layer.js"></script>
+    <script src="~/assets/js/extentjquery/jquery.iframe.HeightReLoad.js"></script>
+    <script src="~/assets/js/artDialog/dialog.js"></script>
+    <script src="~/assets/js/extentjquery/jquery.input.js"></script>
+    <script src="~/assets/My97DatePicker/WdatePicker.js"></script>
+
+
 </head>
 <body style="overflow-y: hidden;">
     <!--main-content顶部-->
@@ -127,10 +136,10 @@
                 <a href="../../Main/Index" target="right">@infoModel.SystemName</a>
             </li>
             <li class="active">@ViewData["FirstMenu"].ToString()</li>
-            @if (@ViewData["SecondMenu"]!=null)
+            @if (@ViewData["SecondMenu"] != null)
             {
                 <li class="active">@ViewData["SecondMenu"].ToString()</li>
-            }          
+            }
         </ul>
         <!-- .breadcrumb -->
 
@@ -150,7 +159,7 @@
     <!--内容页.page-content-->
     <div class="page-content">
         <!-- .page-header -->
-@*          <div class="page-header">
+        @*          <div class="page-header">
             <h1>@ViewData["FirstMenu"].ToString()
                 @if (ViewData["SecondMenu"] == null)
                 {

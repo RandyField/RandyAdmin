@@ -34,7 +34,19 @@ namespace BLL.Session
             }
 
             UserSession session = new UserSession();
+            
+            //设置用户信息
             session.User = user;
+            
+            //设置用户角色信息
+
+            //设置用户权限信息
+
+            //设置用户一级菜单信息
+
+            //设置用户二级菜单信息
+
+            //设置用户三级菜单信息
             
             UserInfo = session;
         }

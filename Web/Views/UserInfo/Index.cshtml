@@ -6,27 +6,8 @@
     <div class='col-sm-12'>
         <div id='sample-table-2_filter' class='dataTables_filter'>
             <label>
-                游戏ID:
-                                <input aria-controls='sample-table-2' id="gameid" type='text'>
-            </label>
-
-            <label>
-                玩家昵称:
-                                <input aria-controls='sample-table-2' id="nickname" type='text'>
-            </label>
-
-            <label>
-                游戏分数:
-                                <input aria-controls='sample-table-2' id="gamescore" type='text'>
-            </label>
-
-            <label>
-                游戏时间:
-                                <input aria-controls='sample-table-2' onClick="WdatePicker()" readonly="readonly" id="gametime" type='text'>
-            </label>
-            <label>
-                计算机名:
-                                <input aria-controls='sample-table-2' id="pcname" type='text'>
+                用户名:
+                                <input aria-controls='sample-table-2' id="username" type='text'>
             </label>
             <button class='btn btn-purple btn-sm' id="searchBtn">
                 <i class='icon-searchicon-on-right bigger-110'></i>
@@ -54,17 +35,34 @@
                                 <span class="lbl"></span>
                             </label>
                         </th>
-                        <th>游戏ID</th>
-                        <th>游戏名称</th>
-                        <th>计算机名</th>
-                        <th>玩家昵称</th>
-                        <th>玩家微信OpenId</th>
-                        <th>游戏分数</th>
+                        <th>用户名</th>
+                        <th>角色</th>
+                        <th>真实姓名</th>
+                        <th>
+                            <i class="icon-group bigger-110 hidden-480"></i>	 
+                            电话
+                        </th>	
+                        <th>
+                            <i class="icon-envelope-alt bigger-110 hidden-480"></i>
+                            电子邮箱
+                        </th>
                         <th>
                             <i class="icon-time bigger-110 hidden-480"></i>
-                            游戏时间
+                            创建时间
                         </th>
-                        <th class="hidden-480 bigger-110">操作</th>
+                        <th>
+                            <i class="icon-time bigger-110 hidden-480"></i>
+                            上次登录
+                        </th>
+                        <th>
+                            <i class="icon-bar-chart bigger-110 hidden-480"></i>
+                            登录次数
+                        </th>
+
+                        <th class="hidden-480 bigger-110">
+                            <i class="icon-cogs  bigger-110 hidden-480"></i>
+                            操作                         
+                        </th>
                     </tr>
                 </thead>
             </table>
@@ -77,20 +75,30 @@
 <!-- datatable操作按钮脚本-->
 <!-- ace scripts -->
 <script type="text/javascript">
-
+    var showaddurl = "../UserInfo/ShowAdd/";
+    var addurl = "../UserInfo/Add/";
+    var searchurl = "../UserInfo/Search/";
+    var showediturl = "../UserInfo/ShowEidt/";
+    var deleturl = "../UserInfo/Delete";
+    var backurl = "../UserInfo/Index";
     function ShowAdd() {
         var iframe = parent.document.getElementById("rightMain");
-        iframe.src = "../GameRecord/ShowAdd/";
+        iframe.src = showaddurl;
     }
 
     //$.ReloadIframe("right");
     jQuery(function ($) {
+        //$.getJSON("../../Role/GetGameList", null, function (data) {
+        //    $.each(data, function (i, item) {
+        //        $("#gameName").append("<option value='" + item.value + "'>" + item.text + "</option>");
+        //    });
+        //});
         //$.ReloadIframe("rightMain");
         var oDataTable = $('#sample-table-2').dataTable({
             "bProcessing": true,//设置异步请求时，是否有等待框 开启读取服务器数据时显示正在加载中……特别是大数据量的时候，开启此功能比较好  
             "bServerSide": true,//指定服务端分页，必须的属性！
             "sAjaxDataProp": "aaData",//是服务器分页的标志，必须有   
-            "sAjaxSource": '../GameRecord/Search/', //获取数据的ajax方法的URL
+            "sAjaxSource": searchurl, //获取数据的ajax方法的URL
             "bPaginate": true,//是否支持分页,分页工具条显示
             "sPaginationType": "bootstrap",//分页工具条样式  -bootstrap
             "bStateSave": false, //是否打开客户端状态记录功能,此功能在ajax刷新纪录的时候不会将个性化设定回复为初始化状态  -保存状态到cookie  
@@ -116,43 +124,48 @@
             ],
             //查询参数 筛选参数
             "fnServerParams": function (aoData) {
-                aoData.push({ "name": "Gameid", "value": $("#gameid").val() });
-                aoData.push({ "name": "PlayerNickname", "value": $("#nickname").val() });
-                aoData.push({ "name": "PlayerScore", "value": $("#gamescore").val() });
-                aoData.push({ "name": "UploadTime", "value": $("#gametime").val() });
-                aoData.push({ "name": "ComputerName", "value": $("#pcname").val() });
+                //aoData.push({ "name": "GameName", "value": $("#gamename").val() });
+                aoData.push({ "name": "UserName", "value": $("#username").val() });
+                //aoData.push({ "name": "GameStartTime", "value": $("#starttime").val() });
+                //aoData.push({ "name": "GameEndTime", "value": $("#endtime").val() });
             },
             //初始化要显示的列 
             "aoColumns": [
                 {
-                    "mDataProp": "ID",//获取列数据，跟服务器返回字段一致  
+                    "mDataProp": "UserID",//获取列数据，跟服务器返回字段一致  
                     "sClass": "center",//显示样式  
                     "mRender": function (data, type, rowData) {//返回自定义的样式  
-                        return "<label><input type='checkbox' class='ace' value='" + rowData.ID + "' /><span class='lbl'></span></label>"
+                        return "<label><input type='checkbox' class='ace' value='" + rowData.UserID + "' /><span class='lbl'></span></label>"
                     }
                 }, {
-                    "mDataProp": "Gameid"
+                    "mDataProp": "UserName"
                 }, {
-                    "mDataProp": "GameName"
+                    "mDataProp": "RoleName"
                 }, {
-                    "mDataProp": "ComputerName"
+                    "mDataProp": "RealName"
                 }, {
-                    "mDataProp": "PlayerNickname"
+                    "mDataProp": "Phone"
                 }, {
-                    "mDataProp": "PlayerOpenId"
+                    "mDataProp": "Email"
                 }, {
-                    "mDataProp": "PlayerScore"
-                }, {
-                    "mDataProp": "UploadTime",
+                    "mDataProp": "CreateTime",
                     "mRender": function (data, type, full) {
                         return new Date(data)//处理时间显示  
                         .toLocaleString();
                     }
                 }, {
+                    "mDataProp": "LastLoginTime",
+                    "mRender": function (data, type, full) {
+                        return new Date(data)//处理时间显示  
+                        .toLocaleString();
+                    }
+                }, {
+                    "mDataProp": "Count"
+                }, {
                     "sDefaultContent": "",//不绑定任何后端列       
                     "sClass": "operation",
                     "mRender": function (data, type, rowData) {
-                        return '<span data-id="' + rowData.ID + '" style="display:none"></span>' + $("#handleBtn").html();
+                        return '<span data-id="' + rowData.UserID + '" style="display:none"></span>' + $("#handleBtn").html();
                     }
                 }],
             "oLanguage": {
@@ -198,11 +211,11 @@
 
                                     if ($(this).attr("data-type") == "edit") {
                                         var iframe = parent.document.getElementById("rightMain");
-                                        iframe.src = "../GameRecord/ShowEdit?permissionId=" + id + "";
+                                        iframe.src = showediturl + "?id=" + id + "";
                                     }
 
                                     if ($(this).attr("data-type") == "delete") {
-                                        delet(id, "../GameRecord/Delete");
+                                        delet(id);
                                     }
                                 });
                             });
@@ -212,22 +225,22 @@
             });
         }
 
-        function delet(id, url) {
+        function delet(id) {
             var data = {};
             data["id"] = id;
             $.ajax({
                 type: 'post',//可选get  
-                url: url,
+                url: deleturl,
                 data: JSON.stringify(data),
                 contentType: "application/json", //必须有 
                 dataType: 'json',//服务器返回的数据类型 可选XML ,Json jsonp script htmltext等  
                 success: function (result) {
                     if (result.success) {
-                        $.tips("删除成功", result.success, "../GameRecord/Index");
+                        $.tips("删除成功", result.success, backurl);
                         //oDataTable.fnClearTable();
                     }
                     else {
-                        $.tips("删除失败，失败原因:" + result.msg + "", result.success, "../GameRecord/Index");
+                        $.tips("删除失败，失败原因:" + result.msg + "", result.success, backurl);
                     }
                 },
                 error: function () {

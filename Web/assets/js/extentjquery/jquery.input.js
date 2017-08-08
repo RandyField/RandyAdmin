@@ -27,6 +27,21 @@ $.extend({
         });
         return isNull;
     },
+    checknoone: function ($e, tipsTitle, tipsContent) {
+        var onone = true;
+        $e.each(function () {
+            if ($(this).prop("checked")) {
+                onone = false;             
+                return false;
+            }
+        });
+        if (onone) {
+            layer.msg(tipsContent, {
+                time: 3000
+            });
+        }
+        return onone;
+    },
 
     inputIsNull: function ($e, tipsTitle, tipsContent) {
         var isNull = false;

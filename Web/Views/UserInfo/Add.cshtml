@@ -5,45 +5,78 @@
 
 @using EFModel;
 @using Common.Helper;
-@model List<SYS_PERMISSION>
-<style type="text/css">
-    .checkbox {
-        min-width: 240px;
-        display: inline-block;
-    }
-</style>
-
+@using Web.Models;
+@model UserRelationInfo
 <div class="row">
     <div class='col-sm-12'>
         <form class="form-horizontal" role="form">
             <div class="form-group">
-                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">角色名称</label>
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">用户名</label>
 
                 <div class="col-sm-9">
-                    <input type="text" id="rolename" placeholder="角色名称" class="col-xs-10 col-sm-5" />
+                    <input type="text" id="username" placeholder="用户名" class="col-xs-10 col-sm-5" />
                 </div>
             </div>
 
             <div class="form-group">
-                @*<label class="col-sm-3 control-label no-padding-right" for="form-field-1">关联权限</label>*@
-                <h3 class="header smaller lighter blue">关联权限	
-                    <small>每一种角色包含一个或者多个权限</small>
-                </h3>
-            </div>
-            <div class="form-group">
-                @if (Model != null && Model.Count > 0)
-                {
-                    foreach (var item in Model)
-                    {
-                    <div class="checkbox">
-                        <label>
-                            <input name="form-field-checkbox" class="ace ace-checkbox-2 perckb" type="checkbox" value="@item.PermissionID">
-                            <span class="lbl">@item.PermissionName</span>
-                        </label>
-                    </div>
-                    }
-                }
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">角色</label>
 
+                <div class="col-sm-9">
+                    <select class="col-xs-10 col-sm-5" id="roleid">
+                        <option value=''>请选择角色</option>
+                        @if (Model.rolelist != null && Model.rolelist.Count > 0)
+                        {
+                            foreach (var item in Model.rolelist)
+                            {
+                            <option value='@item.RoleID'>@item.RoleName</option>
+                            }
+                        }
+
+                    </select>
+                    @*  <input type="text" id="roleid" placeholder="角色" class="col-xs-10 col-sm-5" />*@
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">真实姓名</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="realname" placeholder="真实姓名" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">电话</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="phone" placeholder="电话" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">E-mail</label>
+
+                <div class="col-sm-9">
+                    <input type="text" id="email" placeholder="E-mail" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">部门</label>
+
+                <div class="col-sm-9">
+                    <select class="col-xs-10 col-sm-5" id="departid">
+                        <option value=''>请选择部门</option>
+                        @if (Model.departlist != null && Model.departlist.Count > 0)
+                        {
+                            foreach (var item in Model.departlist)
+                            {
+                            <option value='@item.DepartName'>@item.DepartCode</option>
+                            }
+                        }
+                    </select>
+                    @* <input type="text" id="email" placeholder="部门" class="col-xs-10 col-sm-5" />*@
+                </div>
             </div>
 
             <div class="hr hr32 hr-dotted"></div>
@@ -68,7 +101,7 @@
 
                 </div>
             </div>
-            <div class="hr hr-24"></div>
+            @*            <div class="hr hr-24"></div>*@
         </form>
     </div>
 </div>
@@ -76,7 +109,7 @@
     $(function () {
         $.ReloadIframe("rightMain");
 
-        //$.getJSON("../../GameOnline/GetGameList", null, function (data) {
+        //$.getJSON("../../UserInfo/GetGameList", null, function (data) {
         //    $.each(data, function (i, item) {
         //        $("#gameName").append("<option value='" + item.value + "'>" + item.text + "</option>");
         //    });
@@ -84,7 +117,7 @@
     });
 
     function back() {
-        $.returnBack("../Role/Index");
+        $.returnBack("../UserInfo/Index");
     }
 
     function save() {
@@ -122,20 +155,19 @@
 
         $.ajax({
             type: 'post',//可选get  
-            url: '../../Role/Add',
+            url: '../../UserInfo/Add',
             data: JSON.stringify(postData),
             contentType: "application/json", //必须有 
             dataType: 'json',//服务器返回的数据类型 可选XML ,Json jsonp script htmltext等  
             success: function (result) {
                 if (result.success) {
-                    $.tips("保存成功", result.success, "../Role/Index");
+                    $.tips("保存成功", result.success, "../UserInfo/Index");
                 }
                 else {
-                    $.tips("保存失败，失败原因:" + result.msg + "", result.success, "../Role/Index");
+                    $.tips("保存失败，失败原因:" + result.msg + "", result.success, "../UserInfo/Index");
                 }
             },
             error: function () {
-
             }
         });
     }

@@ -7,53 +7,24 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Web.Attribute;
+using Web.Models;
 
 namespace Web.Controllers
 {
-    public class RoleController : Controller
+    public class UserInfoController : Controller
     {
-        SYS_ROLE_BLL bll = SYS_ROLE_BLL.getInstance();
+        SYS_USERINFO_BLL bll = SYS_USERINFO_BLL.getInstance();
 
-        [AuthorityFilter]
         /// <summary>
         /// 加载
         /// </summary>
         /// <returns></returns>
         public ActionResult Index()
         {
-            ViewData["FirstMenu"] = "平台管理";
-            ViewData["SecondMenu"] = "角色管理";
+            ViewData["FirstMenu"] = "系统管理";
+            ViewData["SecondMenu"] = "用户管理";
             return View();
         }
-
-        ///// <summary>
-        ///// 获取可用游戏列表
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpGet]
-        //public ActionResult GetGameList()
-        //{
-        //    DataTable dt = bll.GetGameList();
-        //    SelectHelper model = new SelectHelper();
-        //    model.text = "请选择游戏";
-        //    model.value = "";
-
-        //    List<SelectHelper> list = new List<SelectHelper>();
-        //    list.Add(model);
-
-        //    foreach (DataRow item in dt.Rows)
-        //    {
-        //        list.Add(new SelectHelper()
-        //        {
-        //            text = item["Gamename"].ToString().Trim(),
-        //            value = item["Gameid"].ToString().Trim()
-        //        });
-        //    }
-
-        //    return Json(list, JsonRequestBehavior.AllowGet);
-        //}
-
 
         /// <summary>
         ///  分页查询
@@ -61,7 +32,7 @@ namespace Web.Controllers
         /// <param name="param"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public string Search(JqueryDataTableParams param, SYS_ROLE model)
+        public string Search(JqueryDataTableParams param, SYS_USERINFO model)
         {
             try
             {
@@ -123,10 +94,12 @@ namespace Web.Controllers
         public ActionResult ShowAdd()
         {
             ViewData["FirstMenu"] = "平台管理";
-            ViewData["SecondMenu"] = "角色管理";
-            //获取所有权限列表
-            List<SYS_PERMISSION> list = SYS_PERMISSION_BLL.getInstance().GetAll();
-            return View("Add", list);
+            ViewData["SecondMenu"] = "用户管理";
+
+            UserRelationInfo model = new UserRelationInfo();
+            model.rolelist = SYS_ROLE_BLL.getInstance().GetAll();
+            model.departlist = SYS_DEPARTMENT_BLL.getInstance().GetAll();
+            return View("Add",model);
         }
 
         /// <summary>
@@ -135,16 +108,14 @@ namespace Web.Controllers
         /// <param name="list"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Add(string RoleName, string PermissionIDs)
+        public ActionResult Add(SYS_USERINFO model)
         {
-            //model.RoleName = model.RoleName.Trim();
-            //model.CreateTime = DateTime.Now;
             string msg = "";
             jsonResult result = new jsonResult();
             bool success = false;
             result.success = success;
             result.msg = msg;
-            result.success = bll.Add(RoleName, PermissionIDs, out msg);
+            result.success = bll.Add(model, out msg);
             return Json(result);
         }
 
@@ -155,8 +126,8 @@ namespace Web.Controllers
         public ActionResult ShowEdit(string id)
         {
             ViewData["FirstMenu"] = "平台管理";
-            ViewData["SecondMenu"] = "角色管理";
-            SYS_ROLE model = bll.GetById(id);
+            ViewData["SecondMenu"] = "用户管理";
+            SYS_USERINFO model = bll.GetById(id);
             return View("Edit", model);
         }
 
@@ -166,7 +137,7 @@ namespace Web.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Edit(SYS_ROLE model)
+        public ActionResult Edit(SYS_USERINFO model)
         {
             string msg = "";
             jsonResult result = new jsonResult();
@@ -191,7 +162,6 @@ namespace Web.Controllers
             result.msg = msg;
             return Json(result);
         }
-
 
     }
 }

@@ -116,8 +116,8 @@ namespace BLL
                             dbcontext.Set<SYS_PERMISSION_MENU_RELATION>().Add(p_mmodel);
                             dbcontext.SaveChanges();
                         }
-                        msg = "保存成功";
                         tran.Commit();
+                        msg = "保存成功";                  
                         success = true;
                     }
                     catch (Exception ex)
@@ -184,8 +184,10 @@ namespace BLL
 
                         dbcontext.SaveChanges();
 
-                        msg = "删除成功";
                         tran.Commit();
+
+                        msg = "删除成功";
+                      
                         success = true;
                     }
                     catch (Exception ex)
@@ -305,6 +307,24 @@ namespace BLL
                 recordCount = 0;
                 pageCount = 0;
                 Logger.Error(string.Format("分页获取权限列表，异常信息：{0}", ex.ToString()));
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 获取所有权限列表
+        /// </summary>
+        /// <returns></returns>
+        public List<SYS_PERMISSION> GetAll()
+        {
+            List<SYS_PERMISSION> list = null;
+            try
+            {
+                list = idal.FindAll.ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format("分页获取所有权限，异常信息：{0}", ex.ToString()));
             }
             return list;
         }

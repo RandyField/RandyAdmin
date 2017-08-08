@@ -56,7 +56,8 @@
 </div>
 <!--jquery.dataTables-->
 
-@Html.Partial("_ListLayout.DataTableOperation")
+@*@Html.Partial("_ListLayout.DataTableOperation")*@
+@Html.Partial("_ListLayout.DeleteOperation")
 <!-- datatable操作按钮脚本-->
 
 <!-- ace scripts -->
@@ -81,7 +82,7 @@
             "bLengthChange": true, //用户不可改变每页显示数量 每页显示的记录数
             "iDisplayLength": 15, //每页显示8条数据
             "iDisplayStart": 0,
-            //"fnServerData": fnAjaxRequest,//获取数据的处理函数   
+            "fnServerData": fnAjaxRequest,//获取数据的处理函数   
             //"aLengthMenu": [
             //    [5, 15, 20, -1],
             //    [5, 15, 20, "All"] // change per page values here
@@ -122,8 +123,10 @@
                     }
                 }, {
                     "sDefaultContent": "",
+                    "sClass": "operation",
                     "mRender": function (data, type, rowData) {
-                        return $("#handleBtn").html()
+                        return '<span data-id="' + rowData.ID + '" style="display:none"></span>' + $("#handleBtn").html();
+                        //return $("#handleBtn").html()
                     }
                 }],
             "oLanguage": {
@@ -147,6 +150,64 @@
         $("#searchBtn").bind('click', function () {
             oDataTable.fnClearTable();
         });
+
+        function fnAjaxRequest(sSource, aoData, fnCallback) {
+            $.ajax({
+                "dataType": 'json',
+                "type": "get",
+                "url": sSource,
+                "data": aoData,
+                "success": function (resp) {
+                    if (resp) {
+                        fnCallback(resp);
+                        $("td.operation").each(function () {
+                            var id = $(this).find("span").attr("data-id");
+                            $(this).find("a").each(function () {
+                                $(this).bind("click", function () {
+                                    if ($(this).attr("data-type") == "view") {
+
+                                    }
+
+                                    if ($(this).attr("data-type") == "edit") {
+                                        var iframe = parent.document.getElementById("rightMain");
+                                        iframe.src = "../Depart/ShowEdit?id=" + id + "";
+                                    }
+
+                                    if ($(this).attr("data-type") == "delete") {
+                                        delet(id, "../Depart/Delete");
+                                    }
+                                });
+                            });
+                        });
+                    }
+                }
+            });
+        }
+
+        function delet(id, url) {
+            var data = {};
+            data["id"] = id;
+            $.ajax({
+                type: 'post',//可选get  
+                url: url,
+                data: JSON.stringify(data),
+                contentType: "application/json", //必须有 
+                dataType: 'json',//服务器返回的数据类型 可选XML ,Json jsonp script htmltext等  
+                success: function (result) {
+                    if (result.success) {
+                        //$.tips("删除成功", result.success, "../Depart/Index");                     
+                        oDataTable.fnClearTable();
+                    }
+                    else {
+                        $.tips("删除失败，失败原因:" + result.msg + "", result.success, "../Depart/Index");
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+
 
         function retrieveData(sSource, aoData, fnCallback) {
             //将客户名称加入参数数组

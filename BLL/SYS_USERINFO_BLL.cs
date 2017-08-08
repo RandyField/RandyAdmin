@@ -1,4 +1,6 @@
-﻿using Common.Helper;
+﻿using Common;
+using Common.Enum;
+using Common.Helper;
 using DAL;
 using EFModel;
 using Interface;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace BLL
 {
@@ -293,26 +296,25 @@ namespace BLL
                 {
                     #region 组装查询条件
 
-                    //if (!string.IsNullOrWhiteSpace(modle.PlayerNickname))
-                    //{
-                    //    condition.AddCondition("a.PlayerNickname", modle.PlayerNickname, SqlOperator.Like, true);                        
-                    //}
-
+                    if (!string.IsNullOrWhiteSpace(modle.UserName))
+                    {
+                        condition.AddCondition("b.UserName", modle.UserName, SqlOperator.Like, true);
+                    }
                     #endregion
                 }
                 PagerInfo pager = new PagerInfo();
                 #region 组装存储过程调用参数
 
 
-                //pager.curPage = pageIndex;
-                //pager.pageSize = pageSize;
-                //pager.isDescending = true;
-                //pager.fields = "a.*,c.GameName";
-                //pager.sortField = "a.UploadTime";
-                //pager.indexField = "a.ID";
-                //pager.where = null;
-                //pager.condition = condition;
-                //pager.tableName = "[ZhpGame].[dbo].[Zhp_GameRecord] a left join  [Zhp_OnlineGame] b on a.Gameid=b.Gameid left join [Zhp_GameConfig] c on b.GameCode= c.GameCode ";
+                pager.curPage = pageIndex;
+                pager.pageSize = pageSize;
+                pager.isDescending = true;
+                pager.fields = "b.*,c.RoleName,c.RoleID";
+                pager.sortField = "b.UserID";
+                pager.indexField = "b.UserID";
+                pager.where = null;
+                pager.condition = condition;
+                pager.tableName = "[ZhpGame].[dbo].[SYS_USER_ROLE_RELATION]  a inner join [SYS_USERINFO] b on a.UserID=b.UserID inner join [SYS_ROLE] c on c.RoleID=a.RoleID";
 
                 #endregion
                 dt = idal.PageQuery(pager, out recordCount, out pageCount);
@@ -325,42 +327,6 @@ namespace BLL
             }
             return dt;
         }
-
-
-        ///// <summary>
-        ///// 新增用户
-        ///// </summary>
-        ///// <param name="model"></param>
-        ///// <returns></returns>
-        //public bool Add(SYS_USERINFO model, out string msg)
-        //{
-        //    bool success = false;
-        //    msg = "";
-        //    try
-        //    {
-        //        Expression<Func<SYS_USERINFO, bool>> exp = a => 1 == 1;
-        //        exp = a => a.UserName.Trim() == model.UserName.Trim();
-        //        if (idal.FindBy(exp).ToList().Count > 0)
-        //        {
-        //            msg = "用户名已存在！";
-        //            success = false;
-        //        }
-        //        else
-        //        {
-        //            idal.Add(model);
-        //            idal.Save();
-        //            msg = "新增成功";
-        //            success = true;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        msg = "新增异常";
-        //        success = false;
-        //        Logger.Error(string.Format("新增用户异常，异常信息：{0}", ex.ToString()));
-        //    }
-        //    return success;
-        //}
 
         /// <summary>
         /// 用户登录
@@ -386,28 +352,19 @@ namespace BLL
                     {
                         msg = "登录成功！";
 
+                        //更新用户登录信息
                         model.Count = model.Count + 1;
                         model.LastLoginTime = DateTime.Now;
-                        //if (model.FromRole == null)
-                        //{
-                        //    msg += "此账号还未分配角色";
-                        //}
-                        //else
-                        //{
+                        idal.Edit(model);
+                        idal.Save();
 
-                        //    SYS_ROLE_BLL bll = SYS_ROLE_BLL.getInstance();
+                        HttpContext.Current.Application.Lock();
 
+                        //增加一个在线人数
+                        HttpContext.Current.Application["OnlineTotal"] = (int)HttpContext.Current.Application["OnlineTotal"] + 1;
 
-                        //    DataTable dt = bll.GetRightGroupList(model.FromRole);
-                        //    if (dt == null || dt.Rows.Count == 0)
-                        //    {
-                        //        msg += "角色尚未定义权限组";
-                        //    }
-                        //    else
-                        //    {
-
-                        //    }
-                        //}
+                        //解锁
+                        HttpContext.Current.Application.UnLock();
 
                         success = true;
                     }
@@ -425,6 +382,38 @@ namespace BLL
                 Logger.Error(string.Format("用户登录异常，异常信息：{0}", ex.ToString()));
             }
             return success;
+        }
+
+
+        /// <summary>
+        /// 校验用户是否单点登录
+        /// </summary>
+        /// <returns></returns>
+        private void IsSSO(string loginName, bool isSSO=false)
+        {      
+            ///判断是否是单点登录 默认不判断单点登录
+            if (isSSO && SysParam.SessionDictionary != null)
+            {
+                //校验登录用户中是否包含当前登录用户
+                if (SysParam.SessionDictionary.ContainsKey(loginName))
+                {
+                    //获取之前客户端SessionID值
+                    string value = SysParam.SessionDictionary[loginName];
+
+                    //此客户端sessionid值与当前客户端sessionid 不同
+                    if (value != HttpContext.Current.Session.SessionID)
+                    {
+                        Dictionary<string, string> Dictionary = SysParam.SessionDictionary;
+                        Dictionary[loginName] = HttpContext.Current.Session.SessionID;
+                        SysParam.SessionDictionary = Dictionary;
+                    }
+                }
+                else
+                {
+                    //客户端登录名，sessionid，键值对存入字典
+                    SysParam.SessionDictionary.Add(loginName, HttpContext.Current.Session.SessionID);
+                }
+            }
         }
 
     }

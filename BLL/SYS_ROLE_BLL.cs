@@ -16,7 +16,7 @@ namespace BLL
 {
     public class SYS_ROLE_BLL
     {
-                /// <summary>
+        /// <summary>
         /// 创建bll的一个对象
         /// </summary>
         private static SYS_ROLE_BLL instance;
@@ -72,9 +72,9 @@ namespace BLL
         {
             DataTable dt = null;
             try
-            {             
+            {
                 dt = idal.SqlQueryForDataTatable(string.Format("  select * from SYS_ROLE a left join SYS_ROLE_RIGHT_RELATION b on a.ID=b.RoleId where a.RoleName='{0}'", RoleName));
-                
+
 
             }
             catch (Exception ex)
@@ -83,7 +83,7 @@ namespace BLL
             }
 
             return dt;
-           
+
         }
 
         /// <summary>
@@ -129,21 +129,47 @@ namespace BLL
         /// </summary>
         /// <param name="model">待新增实体</param>
         /// <returns></returns>
-        public bool Add(SYS_ROLE model, out string msg)
+        public bool Add(string RoleName, string PermissionIDs, out string msg)
         {
             bool success = false;
-            try
+            using (var dbcontext = new DbEntities())
             {
-                idal.Add(model);
-                idal.Save();
-                success = true;
-                msg = "保存成功";
-            }
-            catch (Exception ex)
-            {
-                success = false;
-                msg = "保存失败";
-                Logger.Error(string.Format("SYS_ROLE_BLL 新增异常,异常信息:{0}", ex.ToString()));
+                dbcontext.Database.Connection.Open();
+                using (var tran = dbcontext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        SYS_ROLE model = new SYS_ROLE();
+                        model.RoleName = RoleName.Trim();
+                        model.CreateTime = DateTime.Now;
+                        dbcontext.Set<SYS_ROLE>().Add(model);
+                        dbcontext.SaveChanges();
+                        int roleid = model.RoleID;
+                        //List<SYS_ROLE_PERMISSION_RELATION> 
+                        string[] ids = PermissionIDs.Split(',');
+                        foreach (var id in ids)
+                        {
+                            if (!string.IsNullOrWhiteSpace(id))
+                            {
+                                SYS_ROLE_PERMISSION_RELATION rm = new SYS_ROLE_PERMISSION_RELATION();
+                                rm.RoleId = roleid;
+                                rm.PermissionID = Convert.ToInt32(id);
+                                dbcontext.Set<SYS_ROLE_PERMISSION_RELATION>().Add(rm);
+                                dbcontext.SaveChanges();
+                            }
+                        }
+                        tran.Commit();
+                        msg = "保存成功";
+                        success = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        tran.Rollback();
+                        success = false;
+                        msg = "发生异常";
+                        Logger.Error(string.Format("SYS_ROLE_BLL 新增异常,异常信息:{0}", ex.ToString()));
+                    }
+                }
             }
             return success;
         }
@@ -181,18 +207,37 @@ namespace BLL
         public bool Remove(string id, out string msg)
         {
             bool success = false;
-            try
+            using (var dbcontext = new DbEntities())
             {
-                idal.Delete(id);
-                idal.Save();
-                success = true;
-                msg = "删除成功";
-            }
-            catch (Exception ex)
-            {
-                msg = "删除失败";
-                success = false;
-                Logger.Error(string.Format("SYS_ROLE_BLL 删除异常,异常信息:{0}", ex.ToString()));
+                dbcontext.Database.Connection.Open();
+                using (var tran = dbcontext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        int iid = Convert.ToInt32(id);
+                        SYS_ROLE model = dbcontext.Set<SYS_ROLE>().Find(iid);
+                        dbcontext.Set<SYS_ROLE>().Remove(model);
+                        dbcontext.SaveChanges();
+
+                        Expression<Func<SYS_ROLE_PERMISSION_RELATION, bool>> exp = a => a.RoleId == iid;
+                        var query = dbcontext.Set<SYS_ROLE_PERMISSION_RELATION>().Where(exp);
+                        dbcontext.Set<SYS_ROLE_PERMISSION_RELATION>().RemoveRange(query);
+
+                        dbcontext.SaveChanges();
+
+                        tran.Commit();
+
+                        success = true;
+
+                        msg = "删除成功";
+                    }
+                    catch (Exception ex)
+                    {
+                        msg = "删除失败";
+                        success = false;
+                        Logger.Error(string.Format("SYS_ROLE_BLL 删除异常,异常信息:{0}", ex.ToString()));
+                    }
+                }
             }
             return success;
         }
@@ -349,5 +394,20 @@ namespace BLL
             }
             return dt;
         }
+
+        public List<SYS_ROLE> GetAll()
+        {
+            List<SYS_ROLE> list = null;
+            try
+            {
+                list = idal.FindAll.ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format("SYS_ROLE_BLL 获取所有角色列表，异常信息：{0}", ex.ToString()));
+            }
+            return list;
+        }
+
     }
 }

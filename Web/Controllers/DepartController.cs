@@ -14,7 +14,7 @@ using Web.Models;
 
 namespace Web.Controllers
 {
-    public class DepartController : jQDatatableController
+    public class DepartController : Controller
     {
         //
         // GET: /Depart/
@@ -26,6 +26,22 @@ namespace Web.Controllers
             ViewData["FirstMenu"] = "系统管理";
             ViewData["SecondMenu"] = "部门管理";
             return View();
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult Delete(string id)
+        {
+            string msg = "";
+            jsonResult result = new jsonResult();
+            bool success = bll.Remove(id, out msg);
+            result.success = success;
+            result.msg = msg;
+            return Json(result);
         }
 
         public string Search(jqDtParam<SYS_DEPARTMENT> param, string departName)

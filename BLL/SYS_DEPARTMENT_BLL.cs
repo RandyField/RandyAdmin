@@ -120,5 +120,43 @@ namespace BLL
             return list;
         }
 
+        public List<SYS_DEPARTMENT> GetAll()
+        {
+            List<SYS_DEPARTMENT> list = null;
+            try
+            {
+                list = idal.FindAll.ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format("获取所有部门列表，异常信息：{0}", ex.ToString()));
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 删除-注意主键要与数据库类型相同
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public bool Remove(string id, out string msg)
+        {
+            bool success = false;
+            try
+            {
+                idal.Delete(Convert.ToInt32(id));
+                idal.Save();
+                success = true;
+                msg = "删除成功";
+            }
+            catch (Exception ex)
+            {
+                msg = "删除失败";
+                success = false;
+                Logger.Error(string.Format("SYS_DEPARTMENT_BLL 删除异常,异常信息:{0}", ex.ToString()));
+            }
+            return success;
+        }
     }
 }

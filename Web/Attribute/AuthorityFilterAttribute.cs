@@ -37,4 +37,11 @@ namespace Web.Attribute
             } 
         }
     }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public class LoginAllowViewAttribute : ActionFilterAttribute
+    {
+
+    }
+
 }
