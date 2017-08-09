@@ -2,9 +2,13 @@
 using DAL;
 using EFModel;
 using Interface;
+using Model;
 using Ninject;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -19,7 +23,7 @@ namespace BLL
         /// </summary>
         private static SYS_MENU_BLL instance;
 
-        
+
         /// <summary>
         /// 私有构造函数，改类无法被实例化
         /// </summary>
@@ -74,7 +78,7 @@ namespace BLL
 
                 //系统Id
                 exp = a => a.BelongSys == sysId;
-                list= idal.FindBy(exp).ToList();
+                list = idal.FindBy(exp).ToList();
             }
             catch (Exception ex)
             {
@@ -100,7 +104,7 @@ namespace BLL
 
                 Expression<Func<SYS_MENU, bool>> exp = a => 1 == 1;
                 exp = a => a.Isdelete == 0;
-                list = idal.FindBy(exp).Where(a=>a.MenuLevel==1).OrderBy(a=>a.Sort).ToList();
+                list = idal.FindBy(exp).Where(a => a.MenuLevel == 1).OrderBy(a => a.Sort).ToList();
             }
             catch (Exception ex)
             {
@@ -157,6 +161,38 @@ namespace BLL
             {
                 Logger.Error(string.Format("获取3级菜单列表异常，异常信息：{0}", ex.ToString()));
             }
+            return list;
+        }
+
+        /// <summary>
+        /// 根据用户id获取菜单
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public List<Menuaccess> GetMenuByUserId(string userid)
+        {
+            ///****** Script for SelectTopNRows command from SSMS  ******/
+            //select d.Access,e.* from [SYS_ROLE_PERMISSION_RELATION] c  inner join [SYS_PERMISSION_MENU_RELATION] d on c.PermissionID=d.PermissionID inner join [SYS_MENU] e on d.MenuID=e.ID where  c.RoleId= 
+            //(SELECT b.RoleID FROM [ZhpGame].[dbo].[SYS_USER_ROLE_RELATION] a  inner join [SYS_ROLE] b  on a.RoleID=b.RoleID where  a.UserID=7) 
+
+            List<Menuaccess> list = null;
+            DataTable dt = null;
+            try
+            {
+                DbParameter[] parameters;
+                parameters = new[]{
+                         new SqlParameter(){ ParameterName="@UserID", Value=userid }
+                };
+                dt = idal.SqlQueryForDataTatable("select d.Access,e.* from [SYS_ROLE_PERMISSION_RELATION] c  inner join [SYS_PERMISSION_MENU_RELATION] d on c.PermissionID=d.PermissionID inner join [SYS_MENU] e on d.MenuID=e.ID where  c.RoleId=(SELECT b.RoleID FROM [ZhpGame].[dbo].[SYS_USER_ROLE_RELATION] a  inner join [SYS_ROLE] b  on a.RoleID=b.RoleID where  a.UserID=@UserID) ", parameters);
+
+                list= DatatableHelper.DataTableToList<Menuaccess>(dt,0);
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format("获取角色的所有权限组异常，异常信息：{0}", ex.ToString()));
+            }
+
             return list;
         }
     }

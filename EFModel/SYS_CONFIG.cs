@@ -19,5 +19,6 @@ namespace EFModel
         public string SystemVersion { get; set; }
         public string SystemIcon { get; set; }
         public string UpdateTime { get; set; }
+        public Nullable<int> State { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -71,6 +72,23 @@ namespace BLL
             try
             {
                 model = idal.Find(id);
+            }
+            catch (Exception ex)
+            {
+
+                Logger.Error(string.Format("获取系统信息异常，异常信息：{0}", ex.ToString()));
+            }
+            return model;
+        }
+
+
+        public SYS_CONFIG GetSysInfo()
+        {
+            SYS_CONFIG model = null;
+            try
+            {
+                Expression<Func<SYS_CONFIG, bool>> whLamdba = a => a.State == 1;
+                model = idal.FindBy(whLamdba).FirstOrDefault();
             }
             catch (Exception ex)
             {

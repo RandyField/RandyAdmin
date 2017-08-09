@@ -1,4 +1,5 @@
 ﻿using EFModel;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,21 +41,22 @@ namespace BLL.Session
         /// <summary>
         /// 获取用户一级菜单
         /// </summary>
-        public List<SYS_MENU> FirstMenuList { get; set; }
+        public List<Menuaccess> FirstMenuList { get; set; }
 
         /// <summary>
         /// 获取用户二级菜单
         /// </summary>
-        public List<SYS_MENU> SecondMenuList { get; set; }
+        public List<Menuaccess> SecondMenuList { get; set; }
 
         /// <summary>
         /// 获取用户三级菜单
         /// </summary>
-        public List<SYS_MENU> ThirdMenuList { get; set; }
+        public List<Menuaccess> ThirdMenuList { get; set; }
 
         /// <summary>
         /// 系统信息
         /// </summary>
         public SYS_CONFIG SysInfo { get; set; }
     }
+
 }

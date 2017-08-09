@@ -24,6 +24,10 @@ namespace Web.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 首次登录
+        /// </summary>
+        /// <returns></returns>
         public ActionResult FirstLogin()
         {
             if (CacheHelper.GetCache("Username") == null)
@@ -91,8 +95,11 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult Resetpwd(string pwd1, string pwd2)
         {
+            //缓存中获取用户名
             string username = CacheHelper.GetCache("Username").ToString();
 
+            //缓存清理
+            CacheHelper.RemoveAllCache("Username");
 
             jsonResult result = new jsonResult();
             string msg = "";
@@ -110,6 +117,7 @@ namespace Web.Controllers
             #region 清理缓存 跳转页面
             CacheHelper.RemoveAllCache();
             #endregion
+
             return View("Index");
         }
 

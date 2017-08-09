@@ -57,6 +57,7 @@
     <Compile Include="Helper\CacheHelper.cs" />
     <Compile Include="Helper\CompileLinqSearch.cs" />
     <Compile Include="Helper\ComputerHelper.cs" />
+    <Compile Include="Helper\DatatableHelper.cs" />
     <Compile Include="Helper\DESEncrypt.cs" />
     <Compile Include="Helper\ErrorCode.cs" />
     <Compile Include="Helper\HttpHelper.cs" />

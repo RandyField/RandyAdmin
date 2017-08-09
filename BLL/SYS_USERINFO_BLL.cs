@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using BLL.Session;
+using Common;
 using Common.Enum;
 using Common.Helper;
 using DAL;
@@ -443,6 +444,10 @@ namespace BLL
                         idal.Edit(model);
                         idal.Save();
 
+                        //设置用户Session
+                        AccountInfo.SetUserSession(model);
+
+                        //全局变量锁定
                         HttpContext.Current.Application.Lock();
 
                         //增加一个在线人数

@@ -8,6 +8,7 @@ using System.Data.Entity;
 using System.Linq.Expressions;
 using System.Data;
 using Common.Helper;
+using System.Data.Common;
 
 namespace Interface
 {
@@ -189,6 +190,8 @@ namespace Interface
         #region ef执行sql
 
         DataTable SqlQueryForDataTatable(string sql);
+
+        DataTable SqlQueryForDataTatable(string sql, DbParameter[] parameters);
 
         #endregion
 
