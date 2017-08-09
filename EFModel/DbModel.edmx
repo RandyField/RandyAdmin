@@ -96,7 +96,7 @@
           </Key>
           <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="30" />
-          <Property Name="Password" Type="nvarchar" MaxLength="16" />
+          <Property Name="Password" Type="nvarchar" MaxLength="100" />
           <Property Name="RealName" Type="nvarchar" MaxLength="30" />
           <Property Name="Phone" Type="nvarchar" MaxLength="20" />
           <Property Name="Email" Type="nvarchar" MaxLength="30" />
@@ -106,6 +106,16 @@
           <Property Name="Count" Type="int" />
           <Property Name="Isdelete" Type="int" />
           <Property Name="State" Type="int" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="Zhp_AwardCreate">
           <Key>
@@ -215,6 +225,7 @@
           <EntitySet Name="SYS_ROLE_PERMISSION_RELATION" EntityType="Self.SYS_ROLE_PERMISSION_RELATION" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SYS_USER_ROLE_RELATION" EntityType="Self.SYS_USER_ROLE_RELATION" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SYS_USERINFO" EntityType="Self.SYS_USERINFO" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Zhp_AwardCreate" EntityType="Self.Zhp_AwardCreate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Zhp_AwardsLimited" EntityType="Self.Zhp_AwardsLimited" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Zhp_GameApi" EntityType="Self.Zhp_GameApi" Schema="dbo" store:Type="Tables" />
@@ -246,6 +257,7 @@
           <EntitySet Name="Zhp_GameRecord" EntityType="RandyAdminModel.Zhp_GameRecord" />
           <EntitySet Name="Zhp_OnlineGame" EntityType="RandyAdminModel.Zhp_OnlineGame" />
           <EntitySet Name="Zhp_WxUserInfo" EntityType="RandyAdminModel.Zhp_WxUserInfo" />
+          <EntitySet Name="sysdiagrams" EntityType="RandyAdminModel.sysdiagram" />
         </EntityContainer>
         <EntityType Name="SYS_CONFIG">
           <Key>
@@ -338,7 +350,7 @@
           </Key>
           <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="Password" Type="String" MaxLength="16" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="RealName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Email" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
@@ -446,6 +458,16 @@
           <Property Name="country" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
           <Property Name="headimgurl" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="privilege" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -667,6 +689,17 @@
                 <ScalarProperty Name="nickname" ColumnName="nickname" />
                 <ScalarProperty Name="openid" ColumnName="openid" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="RandyAdminModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -42,5 +42,6 @@ namespace EFModel
         public DbSet<Zhp_GameRecord> Zhp_GameRecord { get; set; }
         public DbSet<Zhp_OnlineGame> Zhp_OnlineGame { get; set; }
         public DbSet<Zhp_WxUserInfo> Zhp_WxUserInfo { get; set; }
+        public DbSet<sysdiagram> sysdiagrams { get; set; }
     }
 }

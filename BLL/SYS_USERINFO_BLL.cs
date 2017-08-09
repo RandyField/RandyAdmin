@@ -108,21 +108,42 @@ namespace BLL
         /// </summary>
         /// <param name="model">待新增实体</param>
         /// <returns></returns>
-        public bool Add(SYS_USERINFO model, out string msg)
+        public bool Add(SYS_USERINFO model, string roleid, out string msg)
         {
             bool success = false;
-            try
+            using (var dbcontext = new DbEntities())
             {
-                idal.Add(model);
-                idal.Save();
-                success = true;
-                msg = "保存成功";
-            }
-            catch (Exception ex)
-            {
-                success = false;
-                msg = "保存失败";
-                Logger.Error(string.Format("SYS_USERINFO_BLL 新增异常,异常信息:{0}", ex.ToString()));
+                dbcontext.Database.Connection.Open();
+                using (var tran = dbcontext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        model.Count = 0;
+                        model.State = 0;
+                        model.Isdelete = 0;
+                        model.CreateTime = DateTime.Now;
+                        model.LastLoginTime = DateTime.Now;
+                        dbcontext.Set<SYS_USERINFO>().Add(model);
+                        dbcontext.SaveChanges();
+
+                        SYS_USER_ROLE_RELATION rm = new SYS_USER_ROLE_RELATION();
+                        rm.RoleID = Convert.ToInt32(roleid);
+                        rm.UserID = model.UserID;
+                        dbcontext.Set<SYS_USER_ROLE_RELATION>().Add(rm);
+                        dbcontext.SaveChanges();
+
+                        tran.Commit();
+                        msg = "保存成功";
+                        success = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        tran.Rollback();
+                        success = false;
+                        msg = "保存失败";
+                        Logger.Error(string.Format("SYS_USERINFO_BLL 新增异常,异常信息:{0}", ex.ToString()));
+                    }
+                }
             }
             return success;
         }
@@ -160,18 +181,39 @@ namespace BLL
         public bool Remove(string id, out string msg)
         {
             bool success = false;
-            try
+            using (var dbcontext = new DbEntities())
             {
-                idal.Delete(id);
-                idal.Save();
-                success = true;
-                msg = "删除成功";
-            }
-            catch (Exception ex)
-            {
-                msg = "删除失败";
-                success = false;
-                Logger.Error(string.Format("SYS_USERINFO_BLL 删除异常,异常信息:{0}", ex.ToString()));
+                dbcontext.Database.Connection.Open();
+                using (var tran = dbcontext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        int iid = Convert.ToInt32(id);
+                        SYS_USERINFO model = dbcontext.Set<SYS_USERINFO>().Find(iid);
+                        dbcontext.Set<SYS_USERINFO>().Remove(model);
+                        dbcontext.SaveChanges();
+
+
+                        Expression<Func<SYS_USER_ROLE_RELATION, bool>> exp = a => a.UserID == iid;
+                        var query = dbcontext.Set<SYS_USER_ROLE_RELATION>().Where(exp);
+                        dbcontext.Set<SYS_USER_ROLE_RELATION>().RemoveRange(query);
+
+                        dbcontext.SaveChanges();
+
+                        tran.Commit();
+
+                        msg = "删除成功";
+
+                        success = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        tran.Rollback();
+                        msg = "删除失败";
+                        success = false;
+                        Logger.Error(string.Format("SYS_USERINFO_BLL 删除异常,异常信息:{0}", ex.ToString()));
+                    }
+                }
             }
             return success;
         }
@@ -234,6 +276,37 @@ namespace BLL
             bool success = false;
             try
             {
+                idal.update(exp, dic);
+                idal.Save();
+                success = true;
+                msg = "保存成功";
+            }
+            catch (Exception ex)
+            {
+                msg = "保存失败";
+                success = false;
+                Logger.Error(string.Format("SYS_USERINFO_BLL 按条件更新异常,异常信息:{0}", ex.ToString()));
+            }
+            return success;
+        }
+
+        /// <summary>
+        /// 重置密码
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="pwd"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public bool Resetpwd(string username, string pwd, out string msg)
+        {
+            bool success = false;
+            try
+            {
+                string password = SecureHelper.MD5(SecureHelper.MD5(pwd) + SysParam.SecretKey);
+                Expression<Func<SYS_USERINFO, bool>> exp = a => a.UserName == username;
+                Dictionary<string, object> dic = new Dictionary<string, object>();
+                dic.Add("Password", password);
+                dic.Add("State", 1);
                 idal.update(exp, dic);
                 idal.Save();
                 success = true;
@@ -332,23 +405,35 @@ namespace BLL
         /// 用户登录
         /// </summary>
         /// <returns></returns>
-        public bool Login(string LoginName, string Password, out string msg)
+        public LoginStatus Login(string LoginName, string Password, out string msg)
         {
-            bool success = false;
+            LoginStatus status = LoginStatus.Other;
             msg = "";
             try
             {
                 Expression<Func<SYS_USERINFO, bool>> exp = a => 1 == 1;
-                exp = a => a.UserName == LoginName;
+                exp = a => a.UserName.ToUpper() == LoginName.ToUpper();
                 if (idal.FindBy(exp).ToList().Count == 0)
                 {
                     msg = "用户名不存在！";
-                    success = false;
+                    status = LoginStatus.Error;
                 }
                 else
                 {
                     SYS_USERINFO model = idal.FindBy(exp).ToList().FirstOrDefault();
-                    if (model.Password.Trim() == Password.Trim())
+
+                    //首次登录
+                    if (model.State == 0)
+                    {
+                        status = LoginStatus.FirstLogin;
+                        if (Password != "888888")
+                        {
+                            msg = "密码错误";
+                            status = LoginStatus.Error;
+                        }
+                    }
+
+                    else if (model.Password.Trim() == SecureHelper.MD5(SecureHelper.MD5(Password) + SysParam.SecretKey).Trim())
                     {
                         msg = "登录成功！";
 
@@ -366,22 +451,22 @@ namespace BLL
                         //解锁
                         HttpContext.Current.Application.UnLock();
 
-                        success = true;
+                        status = LoginStatus.Success;
                     }
                     else
                     {
                         msg = "密码错误";
-                        success = false;
+                        status = LoginStatus.Error;
                     }
                 }
             }
             catch (Exception ex)
             {
                 msg = "登录异常";
-                success = false;
+                status = LoginStatus.Error;
                 Logger.Error(string.Format("用户登录异常，异常信息：{0}", ex.ToString()));
             }
-            return success;
+            return status;
         }
 
 
@@ -389,8 +474,8 @@ namespace BLL
         /// 校验用户是否单点登录
         /// </summary>
         /// <returns></returns>
-        private void IsSSO(string loginName, bool isSSO=false)
-        {      
+        private void IsSSO(string loginName, bool isSSO = false)
+        {
             ///判断是否是单点登录 默认不判断单点登录
             if (isSSO && SysParam.SessionDictionary != null)
             {

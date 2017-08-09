@@ -108,14 +108,14 @@ namespace Web.Controllers
         /// <param name="list"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Add(SYS_USERINFO model)
+        public ActionResult Add(SYS_USERINFO model, string roleid)
         {
             string msg = "";
             jsonResult result = new jsonResult();
             bool success = false;
             result.success = success;
             result.msg = msg;
-            result.success = bll.Add(model, out msg);
+            result.success = bll.Add(model,roleid, out msg);
             return Json(result);
         }
 

@@ -233,6 +233,7 @@ namespace BLL
                     }
                     catch (Exception ex)
                     {
+                        tran.Rollback();
                         msg = "删除失败";
                         success = false;
                         Logger.Error(string.Format("SYS_ROLE_BLL 删除异常,异常信息:{0}", ex.ToString()));

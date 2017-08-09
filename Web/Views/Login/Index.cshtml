@@ -65,7 +65,13 @@
         });
         $(".btn").click(function () {
             is_hide();
-        })
+        });
+
+        function redirect(url) {    
+            if (!!url && typeof (url) != "undefined" && url != 0 && url != '') {
+                location.href = url;
+            }
+        }
         var u = $("input[name=username]");
         var p = $("input[name=password]");
 
@@ -74,7 +80,9 @@
         });
 
         function login() {
-            
+            //$(".btn").click(function () {
+            //    is_hide();
+            //});
             if (u.val() == '' || p.val() == '') {
                 $("#ts").html("用户名或密码不能为空~");
                 is_show();
@@ -99,11 +107,28 @@
                 dataType: 'json',//服务器返回的数据类型 可选XML ,Json jsonp script htmltext等  
                 success: function (result) {
                     if (result.success) {
-                        $("#ts").html("登录成功");
-                        is_show();
-                        location.href = '/Home/Index';
+                        //$("#ts").html("登录成功");
+                        //is_show();
+                        //location.href = '/Home/Index';
+                        //$(".btn").off("click");
+                        //$(".btn").click(function () {
+                        //    redirect("/Home/Index");
+                        //});
+                        redirect("/Home/Index");
                     }
                     else {
+                        debugger;
+                        if (result.state == 4) {
+                            $("#ts").html("首次登录，请设置密码~");
+                            is_show();
+                            $(".btn").off("click");
+                            $(".btn").click(function () {
+                                redirect("/Login/FirstLogin");
+                            });
+                            //$(".alert").show().animate({ "top": "45%" }, 300, "", function () { location.href = '/Login/FirstLogin'; });
+                            //location.href = '/Login/FirstLogin';
+                            return false;
+                        }
                         $("#ts").html("登录失败,原因:" + result.msg + "");
                         is_show();
                         return false;

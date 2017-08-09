@@ -71,7 +71,7 @@
                         {
                             foreach (var item in Model.departlist)
                             {
-                            <option value='@item.DepartName'>@item.DepartCode</option>
+                            <option value='@item.DepartCode'>@item.DepartName</option>
                             }
                         }
                     </select>
@@ -122,35 +122,35 @@
 
     function save() {
         //非空验证
-        if ($.inputValiNull($("#rolename"), "提示", "请输入角色名称")) {
+        if ($.inputValiNull($("#username"), "提示", "请输入用户名")) {
             return;
         }
 
-        debugger;
-        if ($.checknoone($(".perckb"), "提示", "请至少选择一个权限")) {
+        if ($.inputValiNull($("#roleid"), "提示", "请选择角色")) {
             return;
         }
 
-        //if ($.inputValiNull($("#starttime"), "提示", "请选择游戏运行起始时间")) {
-        //    return;
-        //}
-
-        //if ($.inputValiNull($("#endtime"), "提示", "请选择游戏运行结束时间")) {
-        //    return;
-        //}
+        if ($.inputValiNull($("#realname"), "提示", "请输入真实姓名")) {
+            return;
+        }
+        if ($.inputValiNull($("#phone"), "提示", "请输入电话")) {
+            return;
+        }
+        if ($.inputValiNull($("#email"), "提示", "请输入Email")) {
+            return;
+        }
+        if ($.inputValiNull($("#departid"), "提示", "请选择部门")) {
+            return;
+        }
 
         //权限列表
         var postData = {};
-        postData["RoleName"] = $("#rolename").val();
-        var ids = "";
-        $(".perckb").each(function () {
-            if ($(this).prop("checked")) {
-                ids = ids + $(this).val() + ',';
-            }
-        });
-        postData["PermissionIDs"] = ids;
-
-        //postData["GameStartTime"] = $("#starttime").val();
+        postData["UserName"] = $("#username").val();
+        postData["roleid"] = $("#roleid").val();
+        postData["RealName"] = $("#realname").val();
+        postData["Phone"] = $("#phone").val();
+        postData["Email"] = $("#email").val();
+        postData["Department"] = $("#departid").val();
         //postData["GameEndTime"] = $("#endtime").val();
 
         $.ajax({

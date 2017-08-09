@@ -427,6 +427,7 @@
     <Content Include="Views\Role\Index.cshtml" />
     <Content Include="Views\UserInfo\Index.cshtml" />
     <Content Include="Views\UserInfo\Add.cshtml" />
+    <Content Include="Views\Login\FirstLogin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

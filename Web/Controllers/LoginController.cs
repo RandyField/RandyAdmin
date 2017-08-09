@@ -1,4 +1,6 @@
 ﻿using BLL;
+using Common;
+using Common.Enum;
 using Common.Helper;
 using EFModel;
 using System;
@@ -22,6 +24,15 @@ namespace Web.Controllers
             return View();
         }
 
+        public ActionResult FirstLogin()
+        {
+            if (CacheHelper.GetCache("Username") == null)
+            {
+                return View("Index");
+            }
+            return View();
+        }
+
         /// <summary>
         /// 登录
         /// </summary>
@@ -33,8 +44,9 @@ namespace Web.Controllers
         {
 
             string msg = "";
-            bool success = cbll.Login(username, pwd, out msg);
-            if (success)
+            LoginStatus status = cbll.Login(username, pwd, out msg);
+            jsonResult result = new jsonResult();
+            if (status == LoginStatus.Success)
             {
                 #region 菜单信息+用户信息+session
                 SYS_MENU_BLL bll = SYS_MENU_BLL.getInstance();
@@ -49,15 +61,44 @@ namespace Web.Controllers
                 CacheHelper.SetCache("SysInfo", sysmodel);
                 CacheHelper.SetCache("Username", username);
                 #endregion
+
+                result.success = true;
+            }
+            else if (status == LoginStatus.FirstLogin)
+            {
+                CacheHelper.SetCache("Username", username);
+                //跳转至修改密码的默认页面
+                //ViewData["username"] = username;
+                result.success = false;
+
             }
 
-            jsonResult result = new jsonResult();
-            result.success = success;
             result.msg = msg;
-            //return JavaScript("location.href='/Home/Index'");
+            result.state = status;
             return Json(result);
+
+
+            //return JavaScript("location.href='/Home/Index'");
+
             //http post不支持转发，需在客户端进行处理
             //return RedirectToRoute(new { controller = "Home", action = "Index" });
+        }
+
+        /// <summary>
+        /// 重置密码
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult Resetpwd(string pwd1, string pwd2)
+        {
+            string username = CacheHelper.GetCache("Username").ToString();
+
+
+            jsonResult result = new jsonResult();
+            string msg = "";
+            result.success = cbll.Resetpwd(username, pwd1, out msg);
+            result.msg = msg;
+            return Json(result);
         }
 
         /// <summary>

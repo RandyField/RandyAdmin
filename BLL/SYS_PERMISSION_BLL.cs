@@ -122,7 +122,6 @@ namespace BLL
                     }
                     catch (Exception ex)
                     {
-
                         tran.Rollback();
                         success = false;
                         msg = string.Format("保存权限,事务异常，异常信息：{0}", ex.ToString());
