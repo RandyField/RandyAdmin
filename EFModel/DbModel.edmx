@@ -226,6 +226,7 @@
           <Property Name="ComputerName" Type="nvarchar" MaxLength="32" />
           <Property Name="PlayerPhone" Type="nvarchar" MaxLength="15" />
           <Property Name="RecordType" Type="nvarchar" MaxLength="3" />
+          <Property Name="QRCode" Type="nvarchar" MaxLength="50" />
           <Property Name="UploadTime" Type="datetime" />
           <Property Name="SaveTime" Type="datetime" />
         </EntityType>
@@ -481,6 +482,7 @@
           <Property Name="SaveTime" Type="DateTime" Precision="3" />
           <Property Name="PlayerPhone" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="RecordType" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="QRCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Zhp_OnlineGame">
           <Key>
@@ -739,6 +741,7 @@
           <EntitySetMapping Name="Zhp_GameRecord">
             <EntityTypeMapping TypeName="RandyAdminModel.Zhp_GameRecord">
               <MappingFragment StoreEntitySet="Zhp_GameRecord">
+                <ScalarProperty Name="QRCode" ColumnName="QRCode" />
                 <ScalarProperty Name="RecordType" ColumnName="RecordType" />
                 <ScalarProperty Name="PlayerPhone" ColumnName="PlayerPhone" />
                 <ScalarProperty Name="SaveTime" ColumnName="SaveTime" />

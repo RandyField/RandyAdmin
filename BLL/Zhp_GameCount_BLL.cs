@@ -10,25 +10,27 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
-namespace BLL  
+using System.Data.Common;
+using System.Data.SqlClient;
+namespace BLL
 {
-	///<summary>
-	 	///Zhp_GameCount_BLL
-		///Author:ZhangDeng
-	///</summary>
-	public class Zhp_GameCount_BLL
-	{	
-		///<summary>
-		///create bll instance
-		///</summary>
-		private static Zhp_GameCount_BLL instance;
-		
-		/// <summary>
+    ///<summary>
+    ///Zhp_GameCount_BLL
+    ///Author:ZhangDeng
+    ///</summary>
+    public class Zhp_GameCount_BLL
+    {
+        ///<summary>
+        ///create bll instance
+        ///</summary>
+        private static Zhp_GameCount_BLL instance;
+
+        /// <summary>
         /// 私有构造函数，该类无法被实例化
         /// </summary>
         private Zhp_GameCount_BLL() { }
-        
-         /// <summary>
+
+        /// <summary>
         /// 接口
         /// </summary>
         private static I_Zhp_GameCount_DAL idal;
@@ -63,7 +65,7 @@ namespace BLL
 
             return instance;
         }
-        
+
         /// <summary>
         /// 根据主键获取实体
         /// </summary>
@@ -82,13 +84,13 @@ namespace BLL
             }
             return model;
         }
-        
-         /// <summary>
+
+        /// <summary>
         /// 根据条件获取实体列表
         /// </summary>
         /// <param name="exp">条件</param>
         /// <returns></returns>
-         public List<Zhp_GameCount> GetList(Expression<Func<Zhp_GameCount, bool>> exp)
+        public List<Zhp_GameCount> GetList(Expression<Func<Zhp_GameCount, bool>> exp)
         {
             List<Zhp_GameCount> list = null;
             try
@@ -101,21 +103,21 @@ namespace BLL
             }
             return list;
         }
-        
+
         /// <summary>
         /// 新增
         /// </summary>
         /// <param name="model">待新增实体</param>
         /// <returns></returns>
-        public bool Add(Zhp_GameCount model,out string msg)
+        public bool Add(Zhp_GameCount model, out string msg)
         {
             bool success = false;
             try
             {
-               idal.Add(model);
-               idal.Save();
-               success = true;
-               msg = "保存成功";
+                idal.Add(model);
+                idal.Save();
+                success = true;
+                msg = "保存成功";
             }
             catch (Exception ex)
             {
@@ -126,30 +128,30 @@ namespace BLL
             return success;
         }
 
-		/// <summary>
+        /// <summary>
         /// 删除
         /// </summary>
         /// <param name="model">待删除实体</param>
         /// <returns></returns>
-		public bool Remove(Zhp_GameCount model,out string msg)
+        public bool Remove(Zhp_GameCount model, out string msg)
         {
             bool success = false;
             try
             {
-               idal.Delete(model);
-               idal.Save();
-               success = true;
-               msg = "删除成功";
+                idal.Delete(model);
+                idal.Save();
+                success = true;
+                msg = "删除成功";
             }
             catch (Exception ex)
             {
                 success = false;
-                 msg = "删除失败";
+                msg = "删除失败";
                 Logger.Error(string.Format("Zhp_GameCount_BLL 删除异常,异常信息:{0}", ex.ToString()));
             }
             return success;
         }
-        
+
         /// <summary>
         /// 删除-注意主键要与数据库类型相同
         /// </summary>
@@ -160,7 +162,7 @@ namespace BLL
         {
             bool success = false;
             try
-            {             
+            {
                 idal.Delete(id);
                 idal.Save();
                 success = true;
@@ -197,7 +199,7 @@ namespace BLL
             }
             return success;
         }
-        
+
         /// <summary>
         /// 编辑
         /// </summary>
@@ -208,20 +210,20 @@ namespace BLL
             bool success = false;
             try
             {
-               idal.Edit(model);
-               idal.Save();
-               success = true;
-               msg = "保存成功";
+                idal.Edit(model);
+                idal.Save();
+                success = true;
+                msg = "保存成功";
             }
             catch (Exception ex)
             {
-           	    msg = "保存失败";
+                msg = "保存失败";
                 success = false;
                 Logger.Error(string.Format("Zhp_GameCount_BLL 编辑异常,异常信息:{0}", ex.ToString()));
             }
             return success;
         }
-        
+
         /// <summary>
         /// 按条件更新
         /// </summary>
@@ -233,20 +235,20 @@ namespace BLL
             bool success = false;
             try
             {
-               idal.update(exp, dic);
-               idal.Save();
-               success = true;
-               msg = "保存成功";
+                idal.update(exp, dic);
+                idal.Save();
+                success = true;
+                msg = "保存成功";
             }
             catch (Exception ex)
             {
-            	msg = "保存失败";
+                msg = "保存失败";
                 success = false;
                 Logger.Error(string.Format("Zhp_GameCount_BLL 按条件更新异常,异常信息:{0}", ex.ToString()));
             }
             return success;
         }
-        
+
         /// <summary>
         /// 分页查询
         /// </summary>
@@ -256,7 +258,7 @@ namespace BLL
         /// <param name="recordCount"></param>
         /// <param name="pageCount"></param>
         /// <returns></returns>
-        public List<Zhp_GameCount> PageQuery<TKey>(int pageIndex, int pageSize, Expression<Func<Zhp_GameCount, bool>> whLamdba,Expression<Func<Zhp_GameCount, TKey>> orderByLamdba, out int recordCount, out int pageCount)
+        public List<Zhp_GameCount> PageQuery<TKey>(int pageIndex, int pageSize, Expression<Func<Zhp_GameCount, bool>> whLamdba, Expression<Func<Zhp_GameCount, TKey>> orderByLamdba, out int recordCount, out int pageCount)
         {
             List<Zhp_GameCount> list = null;
             try
@@ -275,8 +277,8 @@ namespace BLL
             }
             return list;
         }
-        
-         /// <summary>
+
+        /// <summary>
         /// 分页查询
         /// </summary>
         /// <param name="modle"></param>
@@ -285,16 +287,16 @@ namespace BLL
         /// <param name="recordCount"></param>
         /// <param name="pageCount"></param>
         /// <returns></returns>
-        public DataTable PageQuery(Zhp_GameCount modle,int pageIndex, int pageSize, out int recordCount, out int pageCount)
+        public DataTable PageQuery(Zhp_GameCount modle, int pageIndex, int pageSize, out int recordCount, out int pageCount)
         {
             DataTable dt = new DataTable();
             try
             {
                 SearchCondition condition = new SearchCondition();
-                if (modle!=null)
+                if (modle != null)
                 {
                     #region 组装查询条件
-                                
+
                     //if (!string.IsNullOrWhiteSpace(modle.PlayerNickname))
                     //{
                     //    condition.AddCondition("a.PlayerNickname", modle.PlayerNickname, SqlOperator.Like, true);                        
@@ -304,8 +306,8 @@ namespace BLL
                 }
                 PagerInfo pager = new PagerInfo();
                 #region 组装存储过程调用参数
-                
-                
+
+
                 //pager.curPage = pageIndex;
                 //pager.pageSize = pageSize;
                 //pager.isDescending = true;
@@ -327,5 +329,58 @@ namespace BLL
             }
             return dt;
         }
-	}
+
+        /// <summary>
+        /// 游戏各种统计计数 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="type">
+        /// 001-游戏轮播次数
+        /// 002-游戏屏前点击量
+        /// 003-游戏完成次数
+        /// 004-游戏完成扫码次数
+        /// 005-游戏用户数据完整数
+        /// </param>
+        public void Count(Zhp_GameCount model)
+        {
+            try
+            {
+                Expression<Func<Zhp_GameCount, bool>> exp1 = a => a.Gameid == model.Gameid;
+                Expression<Func<Zhp_GameCount, bool>> exp2 = a => a.Count_Type_Code == model.Count_Type_Code;
+
+                #region 使用纯sql
+
+
+                //DataTable dt = null;
+                //DbParameter[] parameters;
+                //parameters = new[]{
+                //         new SqlParameter(){ ParameterName="@UserID", Value=userid }
+                //};
+                //dt = idal.SqlQueryForDataTatable("select d.Access,e.* from [SYS_ROLE_PERMISSION_RELATION] c  inner join [SYS_PERMISSION_MENU_RELATION] d on c.PermissionID=d.PermissionID inner join [SYS_MENU] e on d.MenuID=e.ID where  c.RoleId=(SELECT b.RoleID FROM [ZhpGame].[dbo].[SYS_USER_ROLE_RELATION] a  inner join [SYS_ROLE] b  on a.RoleID=b.RoleID where  a.UserID=@UserID) ", parameters);
+
+                #endregion
+
+                var list = idal.FindBy(CompileLinqSearch.AndAlso(exp1, exp2)).ToList();
+                if (list != null && list.Count > 0)
+                {
+                    Zhp_GameCount tmodel = list.FirstOrDefault();
+                    tmodel.Count = tmodel.Count + 1;
+                    idal.Edit(tmodel);
+
+                }
+                else
+                {
+                    Zhp_GameCount tmodel = new Zhp_GameCount();
+                    tmodel.Count = 0;
+                    idal.Add(tmodel);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format("游戏计数异常,异常信息:{0},Gameid：【{1}】，CountType：【{2}】", ex.ToString(), model.Gameid, model.Count_Type_Code));
+            }
+
+            idal.Save();
+        }
+    }
 }

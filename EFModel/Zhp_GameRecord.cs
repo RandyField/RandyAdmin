@@ -24,5 +24,6 @@ namespace EFModel
         public Nullable<System.DateTime> SaveTime { get; set; }
         public string PlayerPhone { get; set; }
         public string RecordType { get; set; }
+        public string QRCode { get; set; }
     }
 }

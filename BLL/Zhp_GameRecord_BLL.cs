@@ -136,6 +136,47 @@ namespace BLL
         }
 
         /// <summary>
+        /// 保存玩家微信信息
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public bool SavaGameData(Zhp_GameRecord model,Zhp_WxUserInfo wxmodel, out string msg)
+        {
+           bool success = false;
+           using (var dbcontext = new DbEntities())
+           {
+               dbcontext.Database.Connection.Open();
+               using (var tran = dbcontext.Database.BeginTransaction())
+               {
+                   try
+                   {
+                       //保存用户微信信息
+                       dbcontext.Set<Zhp_WxUserInfo>().Add(wxmodel);
+                       dbcontext.SaveChanges();
+
+                       //保存游戏数据
+                       model.SaveTime = DateTime.Now;
+                       dbcontext.Set<Zhp_GameRecord>().Add(model);
+                       dbcontext.SaveChanges();
+
+                       tran.Commit();
+                       success = true;
+                       msg = "保存成功";
+                   }
+                   catch (Exception ex)
+                   {
+                       tran.Rollback();
+                       msg = "保存失败";
+                       success = false;
+                       Logger.Error(string.Format("Zhp_GameRecord_BLL 保存玩家微信信息,游戏数据,异常信息:{0}", ex.ToString()));
+                   }
+               }
+           }
+            return success;
+        }
+
+        /// <summary>
         /// 删除
         /// </summary>
         /// <param name="model">待删除实体</param>

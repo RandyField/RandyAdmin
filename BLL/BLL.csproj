@@ -61,6 +61,7 @@
     <Compile Include="CommonHelper\PermissionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session\AccountInfo.cs" />
+    <Compile Include="Session\GameRecord.cs" />
     <Compile Include="Session\UserSession.cs" />
     <Compile Include="SYS_CONFIG_BLL.cs" />
     <Compile Include="SYS_DEPARTMENT_BLL.cs" />
