@@ -81,6 +81,12 @@
     <Compile Include="SYS_MENU.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SYS_PARAM.cs">
+      <DependentUpon>DbModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SYS_PARAM_CONFIG.cs">
+      <DependentUpon>DbModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="SYS_PERMISSION.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
@@ -112,6 +118,9 @@
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Zhp_GameConfig.cs">
+      <DependentUpon>DbModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Zhp_GameCount.cs">
       <DependentUpon>DbModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Zhp_GameRecord.cs">

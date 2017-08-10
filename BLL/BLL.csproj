@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base_BLL.cs" />
+    <Compile Include="CommonHelper\Helper.cs" />
     <Compile Include="CommonHelper\PermissionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session\AccountInfo.cs" />
@@ -64,6 +65,8 @@
     <Compile Include="SYS_CONFIG_BLL.cs" />
     <Compile Include="SYS_DEPARTMENT_BLL.cs" />
     <Compile Include="SYS_MENU_BLL.cs" />
+    <Compile Include="SYS_PARAM_BLL.cs" />
+    <Compile Include="SYS_PARAM_CONFIG_BLL.cs" />
     <Compile Include="SYS_PERMISSION_BLL.cs" />
     <Compile Include="SYS_ROLE_BLL.cs" />
     <Compile Include="SYS_USERINFO_BLL.cs" />
@@ -73,6 +76,7 @@
     <Compile Include="Zhp_GameApi_BLL.cs" />
     <Compile Include="Zhp_GameAwards_BLL.cs" />
     <Compile Include="Zhp_GameConfig_BLL.cs" />
+    <Compile Include="Zhp_GameCount_BLL.cs" />
     <Compile Include="Zhp_GameRecord_BLL.cs" />
     <Compile Include="Zhp_OnlineGame_BLL.cs" />
     <Compile Include="Zhp_WxUserInfo_BLL.cs" />

@@ -58,12 +58,15 @@ namespace Web.Controllers
                 List<SYS_MENU> FirstMenuList = bll.GetFirstMenu(1);
                 List<SYS_MENU> SecondMenuList = bll.GetSecondList(1);
                 List<SYS_MENU> ThirdMenuList = bll.GetThirdList(1);
+
+                List<SYS_PARAM> paramlist = SYS_PARAM_BLL.getInstance().GetAll();
                 SYS_CONFIG sysmodel = sbll.GetSysInfo(1);
                 CacheHelper.SetCache("FirstMenu", FirstMenuList);
                 CacheHelper.SetCache("SecondMenu", SecondMenuList);
                 CacheHelper.SetCache("ThirdMenu", ThirdMenuList);
                 CacheHelper.SetCache("SysInfo", sysmodel);
                 CacheHelper.SetCache("Username", username);
+                CacheHelper.SetCache("Paramlist", paramlist);
                 #endregion
 
                 result.success = true;

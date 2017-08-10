@@ -12,17 +12,14 @@ namespace EFModel
     using System;
     using System.Collections.Generic;
     
-    public partial class Zhp_GameRecord
+    public partial class Zhp_GameCount
     {
         public int ID { get; set; }
         public Nullable<int> Gameid { get; set; }
-        public string PlayerScore { get; set; }
-        public string PlayerNickname { get; set; }
-        public string PlayerOpenId { get; set; }
-        public string ComputerName { get; set; }
-        public Nullable<System.DateTime> UploadTime { get; set; }
-        public Nullable<System.DateTime> SaveTime { get; set; }
-        public string PlayerPhone { get; set; }
-        public string RecordType { get; set; }
+        public string Count_Type_Code { get; set; }
+        public Nullable<int> Count { get; set; }
+        public string RESERVED_1 { get; set; }
+        public string RESERVED_2 { get; set; }
+        public string RESERVED_3 { get; set; }
     }
 }

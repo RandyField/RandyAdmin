@@ -48,6 +48,30 @@
           <Property Name="UpdateTime" Type="nvarchar" MaxLength="30" />
           <Property Name="Alias" Type="nvarchar" MaxLength="16" />
         </EntityType>
+        <EntityType Name="SYS_PARAM">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TYPE_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="PRM_Val_NAME_CH" Type="nvarchar" MaxLength="30" />
+          <Property Name="PRM_Val_NAME_EN" Type="nvarchar" MaxLength="30" />
+          <Property Name="PRM_Val_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="RESERVED_1" Type="nvarchar" MaxLength="30" />
+          <Property Name="RESERVED_2" Type="nvarchar" MaxLength="30" />
+          <Property Name="RESERVED_3" Type="nvarchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="SYS_PARAM_CONFIG">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TYPE_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="TYPE_NAME" Type="nvarchar" MaxLength="30" />
+          <Property Name="RESERVED_1" Type="nvarchar" MaxLength="30" />
+          <Property Name="RESERVED_2" Type="nvarchar" MaxLength="30" />
+          <Property Name="RESERVED_3" Type="nvarchar" MaxLength="30" />
+        </EntityType>
         <EntityType Name="SYS_PERMISSION">
           <Key>
             <PropertyRef Name="PermissionID" />
@@ -178,6 +202,18 @@
           <Property Name="State" Type="nvarchar" MaxLength="2" Nullable="false" />
           <Property Name="CreateTime" Type="datetime" />
         </EntityType>
+        <EntityType Name="Zhp_GameCount">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Gameid" Type="int" />
+          <Property Name="Count_Type_Code" Type="nvarchar" MaxLength="30" />
+          <Property Name="Count" Type="int" />
+          <Property Name="RESERVED_1" Type="nvarchar" MaxLength="30" />
+          <Property Name="RESERVED_2" Type="nvarchar" MaxLength="30" />
+          <Property Name="RESERVED_3" Type="nvarchar" MaxLength="30" />
+        </EntityType>
         <EntityType Name="Zhp_GameRecord">
           <Key>
             <PropertyRef Name="ID" />
@@ -188,6 +224,8 @@
           <Property Name="PlayerNickname" Type="nvarchar" MaxLength="124" />
           <Property Name="PlayerOpenId" Type="nvarchar" MaxLength="124" />
           <Property Name="ComputerName" Type="nvarchar" MaxLength="32" />
+          <Property Name="PlayerPhone" Type="nvarchar" MaxLength="15" />
+          <Property Name="RecordType" Type="nvarchar" MaxLength="3" />
           <Property Name="UploadTime" Type="datetime" />
           <Property Name="SaveTime" Type="datetime" />
         </EntityType>
@@ -220,6 +258,8 @@
           <EntitySet Name="SYS_CONFIG" EntityType="Self.SYS_CONFIG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SYS_DEPARTMENT" EntityType="Self.SYS_DEPARTMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SYS_MENU" EntityType="Self.SYS_MENU" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SYS_PARAM" EntityType="Self.SYS_PARAM" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SYS_PARAM_CONFIG" EntityType="Self.SYS_PARAM_CONFIG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SYS_PERMISSION" EntityType="Self.SYS_PERMISSION" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SYS_PERMISSION_MENU_RELATION" EntityType="Self.SYS_PERMISSION_MENU_RELATION" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SYS_ROLE" EntityType="Self.SYS_ROLE" Schema="dbo" store:Type="Tables" />
@@ -232,6 +272,7 @@
           <EntitySet Name="Zhp_GameApi" EntityType="Self.Zhp_GameApi" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Zhp_GameAwards" EntityType="Self.Zhp_GameAwards" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Zhp_GameConfig" EntityType="Self.Zhp_GameConfig" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Zhp_GameCount" EntityType="Self.Zhp_GameCount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Zhp_GameRecord" EntityType="Self.Zhp_GameRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Zhp_OnlineGame" EntityType="Self.Zhp_OnlineGame" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Zhp_WxUserInfo" EntityType="Self.Zhp_WxUserInfo" Schema="dbo" store:Type="Tables" />
@@ -259,6 +300,9 @@
           <EntitySet Name="Zhp_OnlineGame" EntityType="RandyAdminModel.Zhp_OnlineGame" />
           <EntitySet Name="Zhp_WxUserInfo" EntityType="RandyAdminModel.Zhp_WxUserInfo" />
           <EntitySet Name="sysdiagrams" EntityType="RandyAdminModel.sysdiagram" />
+          <EntitySet Name="SYS_PARAM_CONFIG" EntityType="RandyAdminModel.SYS_PARAM_CONFIG" />
+          <EntitySet Name="SYS_PARAM" EntityType="RandyAdminModel.SYS_PARAM" />
+          <EntitySet Name="Zhp_GameCount" EntityType="RandyAdminModel.Zhp_GameCount" />
         </EntityContainer>
         <EntityType Name="SYS_CONFIG">
           <Key>
@@ -435,6 +479,8 @@
           <Property Name="ComputerName" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
           <Property Name="UploadTime" Type="DateTime" Precision="3" />
           <Property Name="SaveTime" Type="DateTime" Precision="3" />
+          <Property Name="PlayerPhone" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="RecordType" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Zhp_OnlineGame">
           <Key>
@@ -470,6 +516,42 @@
           <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="SYS_PARAM_CONFIG">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TYPE_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="TYPE_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RESERVED_1" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RESERVED_2" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RESERVED_3" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SYS_PARAM">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TYPE_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PRM_Val_NAME_CH" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PRM_Val_NAME_EN" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PRM_Val_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RESERVED_1" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RESERVED_2" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RESERVED_3" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Zhp_GameCount">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Gameid" Type="Int32" />
+          <Property Name="Count_Type_Code" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Count" Type="Int32" />
+          <Property Name="RESERVED_1" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RESERVED_2" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RESERVED_3" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -657,6 +739,8 @@
           <EntitySetMapping Name="Zhp_GameRecord">
             <EntityTypeMapping TypeName="RandyAdminModel.Zhp_GameRecord">
               <MappingFragment StoreEntitySet="Zhp_GameRecord">
+                <ScalarProperty Name="RecordType" ColumnName="RecordType" />
+                <ScalarProperty Name="PlayerPhone" ColumnName="PlayerPhone" />
                 <ScalarProperty Name="SaveTime" ColumnName="SaveTime" />
                 <ScalarProperty Name="UploadTime" ColumnName="UploadTime" />
                 <ScalarProperty Name="ComputerName" ColumnName="ComputerName" />
@@ -703,6 +787,45 @@
                 <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
                 <ScalarProperty Name="principal_id" ColumnName="principal_id" />
                 <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_PARAM_CONFIG">
+            <EntityTypeMapping TypeName="RandyAdminModel.SYS_PARAM_CONFIG">
+              <MappingFragment StoreEntitySet="SYS_PARAM_CONFIG">
+                <ScalarProperty Name="RESERVED_3" ColumnName="RESERVED_3" />
+                <ScalarProperty Name="RESERVED_2" ColumnName="RESERVED_2" />
+                <ScalarProperty Name="RESERVED_1" ColumnName="RESERVED_1" />
+                <ScalarProperty Name="TYPE_NAME" ColumnName="TYPE_NAME" />
+                <ScalarProperty Name="TYPE_CODE" ColumnName="TYPE_CODE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_PARAM">
+            <EntityTypeMapping TypeName="RandyAdminModel.SYS_PARAM">
+              <MappingFragment StoreEntitySet="SYS_PARAM">
+                <ScalarProperty Name="RESERVED_3" ColumnName="RESERVED_3" />
+                <ScalarProperty Name="RESERVED_2" ColumnName="RESERVED_2" />
+                <ScalarProperty Name="RESERVED_1" ColumnName="RESERVED_1" />
+                <ScalarProperty Name="PRM_Val_CODE" ColumnName="PRM_Val_CODE" />
+                <ScalarProperty Name="PRM_Val_NAME_EN" ColumnName="PRM_Val_NAME_EN" />
+                <ScalarProperty Name="PRM_Val_NAME_CH" ColumnName="PRM_Val_NAME_CH" />
+                <ScalarProperty Name="TYPE_CODE" ColumnName="TYPE_CODE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Zhp_GameCount">
+            <EntityTypeMapping TypeName="RandyAdminModel.Zhp_GameCount">
+              <MappingFragment StoreEntitySet="Zhp_GameCount">
+                <ScalarProperty Name="RESERVED_3" ColumnName="RESERVED_3" />
+                <ScalarProperty Name="RESERVED_2" ColumnName="RESERVED_2" />
+                <ScalarProperty Name="RESERVED_1" ColumnName="RESERVED_1" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="Count_Type_Code" ColumnName="Count_Type_Code" />
+                <ScalarProperty Name="Gameid" ColumnName="Gameid" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -22,7 +22,7 @@
 
             <label>
                 游戏时间:
-                                <input aria-controls='sample-table-2' onClick="WdatePicker()" readonly="readonly" id="gametime" type='text'>
+                                <input aria-controls='sample-table-2' onclick="WdatePicker()" readonly="readonly" id="gametime" type='text'>
             </label>
             <label>
                 计算机名:
@@ -59,6 +59,8 @@
                         <th>计算机名</th>
                         <th>玩家昵称</th>
                         <th>玩家微信OpenId</th>
+                        <th>电话</th>
+                        <th>记录类型</th>
                         <th>游戏分数</th>
                         <th>
                             <i class="icon-time bigger-110 hidden-480"></i>
@@ -131,16 +133,27 @@
                         return "<label><input type='checkbox' class='ace' value='" + rowData.ID + "' /><span class='lbl'></span></label>"
                     }
                 }, {
+                    "sWidth": "5%",//列之宽度
                     "mDataProp": "Gameid"
                 }, {
+                    "sWidth": "12%",
                     "mDataProp": "GameName"
                 }, {
+                    "sWidth": "10%",
                     "mDataProp": "ComputerName"
                 }, {
+                    "sWidth": "10%",
                     "mDataProp": "PlayerNickname"
                 }, {
+                    "sWidth": "10%",
                     "mDataProp": "PlayerOpenId"
                 }, {
+                    "mDataProp": "PlayerPhone"
+                }, {
+                    "sWidth": "15%",
+                    "mDataProp": "RecordType"
+                }, {
+                    "sWidth": "5%",
                     "mDataProp": "PlayerScore"
                 }, {
                     "mDataProp": "UploadTime",

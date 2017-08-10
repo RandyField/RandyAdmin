@@ -55,6 +55,8 @@
     <Compile Include="I_SYS_CONFIG_DAL.cs" />
     <Compile Include="I_SYS_DEPARTMENT_DAL.cs" />
     <Compile Include="I_SYS_MENU_DAL.cs" />
+    <Compile Include="I_SYS_PARAM_CONFIG_DAL.cs" />
+    <Compile Include="I_SYS_PARAM_DAL.cs" />
     <Compile Include="I_SYS_PERMISSION_DAL.cs" />
     <Compile Include="I_SYS_ROLE_DAL.cs" />
     <Compile Include="I_SYS_USERINFO_DAL.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="I_Zhp_GameApi_DAL.cs" />
     <Compile Include="I_Zhp_GameAwards_DAL.cs" />
     <Compile Include="I_Zhp_GameConfig_DAL.cs" />
+    <Compile Include="I_Zhp_GameCount_DAL.cs" />
     <Compile Include="I_Zhp_GameRecord_DAL.cs" />
     <Compile Include="I_Zhp_OnlineGame_DAL.cs" />
     <Compile Include="I_Zhp_WxUserInfo_DAL.cs" />
