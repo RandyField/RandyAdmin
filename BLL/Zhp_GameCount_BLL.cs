@@ -366,13 +366,11 @@ namespace BLL
                     Zhp_GameCount tmodel = list.FirstOrDefault();
                     tmodel.Count = tmodel.Count + 1;
                     idal.Edit(tmodel);
-
                 }
                 else
-                {
-                    Zhp_GameCount tmodel = new Zhp_GameCount();
-                    tmodel.Count = 0;
-                    idal.Add(tmodel);
+                {                    
+                    model.Count = 0;
+                    idal.Add(model);
                 }
             }
             catch (Exception ex)

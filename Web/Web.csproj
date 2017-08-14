@@ -145,6 +145,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Controllers\PermissionController.cs" />
+    <Compile Include="Controllers\RecordSortController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\ToolController.cs" />
     <Compile Include="Controllers\UserInfoController.cs" />
@@ -428,6 +429,7 @@
     <Content Include="Views\UserInfo\Index.cshtml" />
     <Content Include="Views\UserInfo\Add.cshtml" />
     <Content Include="Views\Login\FirstLogin.cshtml" />
+    <Content Include="Views\RecordSort\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

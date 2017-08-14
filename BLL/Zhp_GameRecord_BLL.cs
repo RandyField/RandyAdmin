@@ -92,6 +92,50 @@ namespace BLL
         }
 
         /// <summary>
+        /// 获取游戏记录排名
+        /// </summary>
+        /// <param name="recordtype"></param>
+        /// <param name="top"></param>
+        /// <returns></returns>
+        public List<Zhp_GameRecord> GetSort(string recordtype, int top)
+        {
+            Expression<Func<Zhp_GameRecord, bool>> exp = a => a.RecordType == recordtype;
+            List<Zhp_GameRecord> list = null;
+            try
+            {
+                list = idal.FindBy(exp).Where(a => a.UploadTime.Value.Date == DateTime.Now.Date).OrderByDescending(a => Convert.ToInt32(a.PlayerScore)).Take(top).ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format("Zhp_GameRecord_BLL 根据条件获取排名实体列表异常,异常信息:{0},日期：【{1}】", ex.ToString(), DateTime.Now.Date.ToString()));
+            }
+            return list;
+        }
+
+
+        /// <summary>
+        /// 获取游戏记录排名
+        /// </summary>
+        /// <param name="recordtype"></param>
+        /// <param name="top"></param>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public List<Zhp_GameRecord> GetSort(string recordtype, int top, DateTime date)
+        {
+            Expression<Func<Zhp_GameRecord, bool>> exp = a => a.RecordType == recordtype;
+            List<Zhp_GameRecord> list = null;
+            try
+            {
+                list = idal.FindBy(exp).Where(a => a.UploadTime.Value.Date == date.Date).OrderByDescending(a => Convert.ToInt32(a.PlayerScore)).Take(top).ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format("Zhp_GameRecord_BLL 根据条件获取排名实体列表异常,异常信息:{0},日期：【{1}】", ex.ToString(), date.Date.ToString()));
+            }
+            return list;
+        }
+
+        /// <summary>
         /// 根据条件获取实体列表
         /// </summary>
         /// <param name="exp">条件</param>
@@ -141,38 +185,38 @@ namespace BLL
         /// <param name="model"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public bool SavaGameData(Zhp_GameRecord model,Zhp_WxUserInfo wxmodel, out string msg)
+        public bool SavaGameData(Zhp_GameRecord model, Zhp_WxUserInfo wxmodel, out string msg)
         {
-           bool success = false;
-           using (var dbcontext = new DbEntities())
-           {
-               dbcontext.Database.Connection.Open();
-               using (var tran = dbcontext.Database.BeginTransaction())
-               {
-                   try
-                   {
-                       //保存用户微信信息
-                       dbcontext.Set<Zhp_WxUserInfo>().Add(wxmodel);
-                       dbcontext.SaveChanges();
+            bool success = false;
+            using (var dbcontext = new DbEntities())
+            {
+                dbcontext.Database.Connection.Open();
+                using (var tran = dbcontext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        //保存用户微信信息
+                        dbcontext.Set<Zhp_WxUserInfo>().Add(wxmodel);
+                        dbcontext.SaveChanges();
 
-                       //保存游戏数据
-                       model.SaveTime = DateTime.Now;
-                       dbcontext.Set<Zhp_GameRecord>().Add(model);
-                       dbcontext.SaveChanges();
+                        //保存游戏数据
+                        model.SaveTime = DateTime.Now;
+                        dbcontext.Set<Zhp_GameRecord>().Add(model);
+                        dbcontext.SaveChanges();
 
-                       tran.Commit();
-                       success = true;
-                       msg = "保存成功";
-                   }
-                   catch (Exception ex)
-                   {
-                       tran.Rollback();
-                       msg = "保存失败";
-                       success = false;
-                       Logger.Error(string.Format("Zhp_GameRecord_BLL 保存玩家微信信息,游戏数据,异常信息:{0}", ex.ToString()));
-                   }
-               }
-           }
+                        tran.Commit();
+                        success = true;
+                        msg = "保存成功";
+                    }
+                    catch (Exception ex)
+                    {
+                        tran.Rollback();
+                        msg = "保存失败";
+                        success = false;
+                        Logger.Error(string.Format("Zhp_GameRecord_BLL 保存玩家微信信息,游戏数据,异常信息:{0}", ex.ToString()));
+                    }
+                }
+            }
             return success;
         }
 
@@ -368,14 +412,85 @@ namespace BLL
 
                 #endregion
                 dt = idal.PageQuery(pager, out recordCount, out pageCount);
-                if (dt!=null && dt.Rows.Count>0)
+                if (dt != null && dt.Rows.Count > 0)
                 {
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {
                         dt.Rows[i]["RecordType"] = BLL.CommonHelper.Helper.GetParamName("001", dt.Rows[i]["RecordType"].ToString());
-                    } 
+                    }
                 }
-               
+
+            }
+            catch (Exception ex)
+            {
+                recordCount = 0;
+                pageCount = 0;
+                Logger.Error(string.Format("Zhp_GameRecord_BLL 分页查询异常，异常信息：{0}", ex.ToString()));
+            }
+            return dt;
+        }
+
+        /// <summary>
+        /// 获取
+        /// </summary>
+        /// <param name="gameid"></param>
+        /// <param name="recordtype"></param>
+        /// <param name="sort"></param>
+        /// <param name="gametime"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="recordCount"></param>
+        /// <param name="pageCount"></param>
+        /// <returns></returns>
+        public DataTable PageQuery(string gameid, string recordtype, string gametime, int pageIndex, int pageSize, out int recordCount, out int pageCount)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SearchCondition condition = new SearchCondition();
+                #region 组装查询条件
+                if (!string.IsNullOrWhiteSpace(gameid))
+                {
+                    condition.AddCondition("a.Gameid", gameid, SqlOperator.Equal, true);
+                }
+                if (!string.IsNullOrWhiteSpace(recordtype))
+                {
+                    condition.AddCondition("a.RecordType", recordtype, SqlOperator.Equal, true);
+                }
+                if (!string.IsNullOrWhiteSpace(gametime))
+                {
+                    condition.AddCondition("a.UploadTime", gametime, SqlOperator.MoreThanOrEqual, true);
+                }
+
+                //if (!string.IsNullOrWhiteSpace(gameid))
+                //{
+                //    condition.AddCondition("a.Gameid", gameid, SqlOperator.Like, true);
+                //}
+                #endregion
+                PagerInfo pager = new PagerInfo();
+                #region 组装存储过程调用参数
+
+
+                pager.curPage = pageIndex;
+                pager.pageSize = pageSize;
+                pager.isDescending = true;
+                pager.fields = "a.*,c.GameName";
+                pager.sortField = " cast(a.PlayerScore as int) desc";
+                pager.indexField = "a.ID";
+                pager.where = null;
+                pager.condition = condition;
+                pager.tableName = "[ZhpGame].[dbo].[Zhp_GameRecord] a left join  [Zhp_OnlineGame] b on a.Gameid=b.Gameid left join [Zhp_GameConfig] c on b.GameCode= c.GameCode ";
+
+                #endregion
+                dt = idal.PageQuery(pager, out recordCount, out pageCount);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        dt.Rows[i]["RecordType"] = BLL.CommonHelper.Helper.GetParamName("001", dt.Rows[i]["RecordType"].ToString());
+                    }
+                }
+
             }
             catch (Exception ex)
             {
