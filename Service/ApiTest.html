@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="Scripts/jquery-1.8.2.min.js"></script>
+
+</head>
+<body>
+    <button class='btn btn-sm' onclick='playAdd()'>
+        <i class='icon-pencil align-top bigger-125'></i>
+        游戏轮播次数增加 
+    </button>
+
+    <button class='btn btn-sm' onclick='clickcount()'>
+        <i class='icon-pencil align-top bigger-125'></i>
+        游戏屏前点击量增加 
+    </button>
+    <button class='btn btn-sm' onclick='finish()'>
+        <i class='icon-pencil align-top bigger-125'></i>
+        游戏完成次数增加 
+    </button>
+    <button class='btn btn-sm' onclick='getSort()'>
+        <i class='icon-pencil align-top bigger-125'></i>
+        获取排名数据 
+    </button>
+
+    <button class='btn btn-sm' onclick='getdata()'>
+        <i class='icon-pencil align-top bigger-125'></i>
+        测试排名 
+    </button>
+    <div>
+        <textarea id="json" style="width: 800px;height:800px; overflow-x: scroll"></textarea>
+    </div>
+</body>
+<script type="text/javascript">
+    var uri = 'api/Game/Count';
+    function playAdd() {
+        var para = {};
+        para["Gameid"] = "7";
+        para["Count_Type_Code"] = "001";
+        $.ajax({
+            type: "post",
+            url: uri,
+            //contentType: 'application/json',
+            data: para
+        });
+    }
+
+    function clickcount() {
+        var para = {};
+        para["Gameid"] = "7";
+        para["Count_Type_Code"] = "002";
+        $.ajax({
+            type: "post",
+            url: uri,
+            //contentType: 'application/json',
+            data: para
+        });
+    }
+
+    function finish() {
+        var para = {};
+        para["Gameid"] = "8";
+        para["Count_Type_Code"] = "003";
+        $.ajax({
+            type: "post",
+            url: uri,
+            //contentType: 'application/json',
+            data: para
+        });
+    }
+
+    function getSort() {
+
+        $.ajax({
+            type: "post",
+            url: 'api/Game/Sort',
+            success: function (data) {
+                alert(data);
+            }
+        });
+    }
+
+    function getdata() {
+        $.ajax({
+            type: "post",
+            url: 'api/Game/SortByDate',
+            success: function (data) {
+                //alert(JSON.stringify(data));
+                $("#json").val(JSON.stringify(data));
+            }
+        });
+    }
+</script>
+</html>

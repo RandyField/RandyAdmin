@@ -25,5 +25,6 @@ namespace EFModel
         public string PlayerPhone { get; set; }
         public string RecordType { get; set; }
         public string QRCode { get; set; }
+        public string Headimgurl { get; set; }
     }
 }

@@ -369,7 +369,7 @@ namespace BLL
                 }
                 else
                 {                    
-                    model.Count = 0;
+                    model.Count = 1;
                     idal.Add(model);
                 }
             }

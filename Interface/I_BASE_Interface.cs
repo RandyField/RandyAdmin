@@ -191,6 +191,8 @@ namespace Interface
 
         DataTable SqlQueryForDataTatable(string sql);
 
+        List<T> SqlQuery<T>(string sql, DbParameter[] args);
+
         DataTable SqlQueryForDataTatable(string sql, DbParameter[] parameters);
 
         #endregion

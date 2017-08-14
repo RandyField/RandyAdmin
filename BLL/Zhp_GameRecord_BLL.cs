@@ -7,6 +7,8 @@ using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -99,15 +101,22 @@ namespace BLL
         /// <returns></returns>
         public List<Zhp_GameRecord> GetSort(string recordtype, int top)
         {
-            Expression<Func<Zhp_GameRecord, bool>> exp = a => a.RecordType == recordtype;
             List<Zhp_GameRecord> list = null;
+            string date = DateTime.Now.Date.ToString();
             try
             {
-                list = idal.FindBy(exp).Where(a => a.UploadTime.Value.Date == DateTime.Now.Date).OrderByDescending(a => Convert.ToInt32(a.PlayerScore)).Take(top).ToList();
+                DbParameter[] parameters;
+                parameters = new[]{
+                     new SqlParameter(){ ParameterName="@recordtype", Value=recordtype },
+                     new SqlParameter(){ ParameterName="@top", Value=top },
+                     new SqlParameter(){ ParameterName="@date", Value=date }
+                };
+                string sql = @"SELECT top (@top) * FROM [ZhpGame].[dbo].[Zhp_GameRecord]  where RecordType=@recordtype and  UploadTime>=@date order by cast(PlayerScore as int) desc";
+                list = idal.SqlQuery<Zhp_GameRecord>(sql, parameters);
             }
             catch (Exception ex)
             {
-                Logger.Error(string.Format("Zhp_GameRecord_BLL 根据条件获取排名实体列表异常,异常信息:{0},日期：【{1}】", ex.ToString(), DateTime.Now.Date.ToString()));
+                Logger.Error(string.Format("Zhp_GameRecord_BLL 根据条件获取排名实体列表异常,异常信息:{0},日期：【{1}】", ex.ToString(), date));
             }
             return list;
         }
@@ -120,17 +129,23 @@ namespace BLL
         /// <param name="top"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public List<Zhp_GameRecord> GetSort(string recordtype, int top, DateTime date)
+        public List<Zhp_GameRecord> GetSort(string recordtype, int top, string date)
         {
-            Expression<Func<Zhp_GameRecord, bool>> exp = a => a.RecordType == recordtype;
             List<Zhp_GameRecord> list = null;
             try
             {
-                list = idal.FindBy(exp).Where(a => a.UploadTime.Value.Date == date.Date).OrderByDescending(a => Convert.ToInt32(a.PlayerScore)).Take(top).ToList();
+                DbParameter[] parameters;
+                parameters = new[]{
+                    new SqlParameter(){ ParameterName="@top", Value=top },
+                    new SqlParameter(){ ParameterName="@recordtype", Value=recordtype},                    
+                    new SqlParameter(){ ParameterName="@date", Value=date }
+                };
+                string sql = @"SELECT top (@top) * FROM [ZhpGame].[dbo].[Zhp_GameRecord]  where RecordType=@recordtype and  UploadTime>=@date order by cast(PlayerScore as int) desc";
+                list = idal.SqlQuery<Zhp_GameRecord>(sql, parameters);
             }
             catch (Exception ex)
             {
-                Logger.Error(string.Format("Zhp_GameRecord_BLL 根据条件获取排名实体列表异常,异常信息:{0},日期：【{1}】", ex.ToString(), date.Date.ToString()));
+                Logger.Error(string.Format("Zhp_GameRecord_BLL 根据条件获取排名实体列表异常,异常信息:{0},日期：【{1}】", ex.ToString(), date));
             }
             return list;
         }

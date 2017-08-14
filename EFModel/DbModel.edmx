@@ -222,6 +222,7 @@
           <Property Name="Gameid" Type="int" />
           <Property Name="PlayerScore" Type="nvarchar" MaxLength="32" />
           <Property Name="PlayerNickname" Type="nvarchar" MaxLength="124" />
+          <Property Name="Headimgurl" Type="text" />
           <Property Name="PlayerOpenId" Type="nvarchar" MaxLength="124" />
           <Property Name="ComputerName" Type="nvarchar" MaxLength="32" />
           <Property Name="PlayerPhone" Type="nvarchar" MaxLength="15" />
@@ -483,6 +484,7 @@
           <Property Name="PlayerPhone" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="RecordType" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="QRCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Headimgurl" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Zhp_OnlineGame">
           <Key>
@@ -741,6 +743,7 @@
           <EntitySetMapping Name="Zhp_GameRecord">
             <EntityTypeMapping TypeName="RandyAdminModel.Zhp_GameRecord">
               <MappingFragment StoreEntitySet="Zhp_GameRecord">
+                <ScalarProperty Name="Headimgurl" ColumnName="Headimgurl" />
                 <ScalarProperty Name="QRCode" ColumnName="QRCode" />
                 <ScalarProperty Name="RecordType" ColumnName="RecordType" />
                 <ScalarProperty Name="PlayerPhone" ColumnName="PlayerPhone" />
