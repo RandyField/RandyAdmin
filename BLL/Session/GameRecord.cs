@@ -16,6 +16,7 @@ namespace BLL.Session
             set { HttpContext.Current.Session.Add("arecord", value); }
         }
 
+
         /// <summary>
         /// 设置游戏数据Session
         /// </summary>
@@ -29,5 +30,7 @@ namespace BLL.Session
             }
             info = record;
         }
+
+             
     }
 }

@@ -23,6 +23,5 @@ namespace EFModel
         public string province { get; set; }
         public string country { get; set; }
         public string headimgurl { get; set; }
-        public string privilege { get; set; }
     }
 }

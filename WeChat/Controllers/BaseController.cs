@@ -16,6 +16,7 @@ namespace WeChat.Controllers
         public readonly string _appId = ConfigurationManager.AppSettings["AppId"];
         public readonly string _appsecret = ConfigurationManager.AppSettings["Appsecret"];
         public readonly string _key = ConfigurationManager.AppSettings["encryption"];
+        public readonly string _wxurl = ConfigurationManager.AppSettings["wxurl"];
 
         /// <summary>
         /// 跳转页面
@@ -88,6 +89,7 @@ namespace WeChat.Controllers
                         string userInfoJson = "";
                         //获取用户信息json
                         userInfoJson = httpHelper.HttpGet(string.Format("https://api.weixin.qq.com/sns/userinfo?access_token={0}&openid={1}&lang=zh_CN", tokenJsonObj["access_token"], tokenJsonObj["openid"]), "");
+                        //Common.Helper.Logger.Info(string.Format("微信json,{0}", userInfoJson));
                         if (!string.IsNullOrWhiteSpace(userInfoJson))
                         {
                             //json反序列化为实体

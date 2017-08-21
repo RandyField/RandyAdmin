@@ -151,6 +151,52 @@ namespace BLL
         }
 
         /// <summary>
+        /// 是否存在二维码
+        /// </summary>
+        /// <param name="QRCode"></param>
+        /// <returns></returns>
+        public int FindByQRCode(string QRCode, out Zhp_GameRecord m)
+        {
+            int flag = 0;
+            try
+            {
+                m = null;
+                Expression<Func<Zhp_GameRecord, bool>> exp = a => a.QRCode == QRCode;
+                if (idal.FindBy(exp).ToList().Count > 0)
+                {
+                    List<Zhp_GameRecord> list = null;
+                    Zhp_GameRecord model = null;
+                    list = idal.FindBy(exp).ToList();
+                    if (list.Count > 0)
+                    {
+                        model = list.FirstOrDefault();
+                        if (model.PlayerPhone == null)
+                        {
+                            flag = 1; //二维码已扫 但是没有手机号码录入
+                        }
+                        else
+                        {
+                            flag = 2; //二维码已扫 有手机号码录入
+                        }
+
+                        m = model;
+                    }
+                    else
+                    {
+                        flag = 3; //二维码未扫
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                m = null;
+                Logger.Error(string.Format("Zhp_GameRecord_BLL 是否存在二维码,异常信息:{0}", ex.ToString()));
+            }
+            return flag;
+        }
+
+        /// <summary>
         /// 根据条件获取实体列表
         /// </summary>
         /// <param name="exp">条件</param>
@@ -216,6 +262,9 @@ namespace BLL
 
                         //保存游戏数据
                         model.SaveTime = DateTime.Now;
+                        model.Headimgurl = wxmodel.headimgurl;
+                        model.PlayerNickname = wxmodel.nickname;
+                        model.PlayerOpenId = wxmodel.openid;
                         dbcontext.Set<Zhp_GameRecord>().Add(model);
                         dbcontext.SaveChanges();
 
@@ -340,12 +389,33 @@ namespace BLL
         public bool Update(Expression<Func<Zhp_GameRecord, bool>> exp, Dictionary<string, object> dic, out string msg)
         {
             bool success = false;
+            Zhp_GameRecord model = null;
             try
             {
-                idal.update(exp, dic);
-                idal.Save();
-                success = true;
+                List<Zhp_GameRecord> list = null;
+                list = idal.FindBy(exp).ToList();
                 msg = "保存成功";
+                if (list.Count > 0)
+                {
+                    model = list.FirstOrDefault();
+                    if (model.PlayerPhone == null)
+                    {
+                        idal.update(exp, dic);
+                        idal.Save();
+                        success = true;
+
+
+                        //提交手机号码计数 
+                        Zhp_GameCount countmodel = new Zhp_GameCount();
+                        countmodel.Gameid = model.Gameid;
+                        countmodel.Count_Type_Code = "005";
+                        Zhp_GameCount_BLL.getInstance().Count(countmodel);
+                    }
+                }
+                else
+                {
+                    success = true;
+                }
             }
             catch (Exception ex)
             {
