@@ -74,17 +74,17 @@
     function getSort() {
 
         $.ajax({
-            type: "post",
+            type: "get",
             url: 'api/Game/Sort',
             success: function (data) {
-                alert(data);
+                $("#json").val(JSON.stringify(data));
             }
         });
     }
 
     function getdata() {
         $.ajax({
-            type: "post",
+            type: "get",
             url: 'api/Game/SortByDate',
             success: function (data) {
                 //alert(JSON.stringify(data));

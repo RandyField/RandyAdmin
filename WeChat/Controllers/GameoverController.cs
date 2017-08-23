@@ -23,6 +23,12 @@ namespace WeChat.Controllers
         /// <returns></returns>
         public ActionResult Index(Zhp_GameRecord model)
         {
+            //1.对完成游戏后扫码次数的计数
+            //Zhp_GameCount countmodel = new Zhp_GameCount();
+            //countmodel.Gameid = model.Gameid;
+            //countmodel.Count_Type_Code = "004";
+            //Zhp_GameCount_BLL.getInstance().Count(countmodel);
+
             ActionResult empty = new EmptyResult();
 
             if (model.PlayerScore == null)

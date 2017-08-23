@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity;
 namespace BLL
 {
     ///<summary>
@@ -343,42 +345,59 @@ namespace BLL
         /// </param>
         public void Count(Zhp_GameCount model)
         {
-            try
+            using (var dbcontext = new DbEntities())
             {
-                Expression<Func<Zhp_GameCount, bool>> exp1 = a => a.Gameid == model.Gameid;
-                Expression<Func<Zhp_GameCount, bool>> exp2 = a => a.Count_Type_Code == model.Count_Type_Code;
-
-                #region 使用纯sql
-
-
-                //DataTable dt = null;
-                //DbParameter[] parameters;
-                //parameters = new[]{
-                //         new SqlParameter(){ ParameterName="@UserID", Value=userid }
-                //};
-                //dt = idal.SqlQueryForDataTatable("select d.Access,e.* from [SYS_ROLE_PERMISSION_RELATION] c  inner join [SYS_PERMISSION_MENU_RELATION] d on c.PermissionID=d.PermissionID inner join [SYS_MENU] e on d.MenuID=e.ID where  c.RoleId=(SELECT b.RoleID FROM [ZhpGame].[dbo].[SYS_USER_ROLE_RELATION] a  inner join [SYS_ROLE] b  on a.RoleID=b.RoleID where  a.UserID=@UserID) ", parameters);
-
-                #endregion
-
-                var list = idal.FindBy(CompileLinqSearch.AndAlso(exp1, exp2)).ToList();
-                if (list != null && list.Count > 0)
+                dbcontext.Database.Connection.Open();
+                using (var tran = dbcontext.Database.BeginTransaction())
                 {
-                    Zhp_GameCount tmodel = list.FirstOrDefault();
-                    tmodel.Count = tmodel.Count + 1;
-                    idal.Edit(tmodel);
+                    try
+                    {
+
+
+                        Expression<Func<Zhp_GameCount, bool>> exp1 = a => a.Gameid == model.Gameid;
+                        Expression<Func<Zhp_GameCount, bool>> exp2 = a => a.Count_Type_Code == model.Count_Type_Code;
+                        Expression<Func<Zhp_GameCount, bool>> exp = CompileLinqSearch.AndAlso(exp1, exp2);
+                        Expression<Func<Zhp_GameCount, bool>> exp3 = a => a.RESERVED_1 == model.RESERVED_1;
+                        #region 使用纯sql
+
+
+                        //DataTable dt = null;
+                        //DbParameter[] parameters;
+                        //parameters = new[]{
+                        //         new SqlParameter(){ ParameterName="@UserID", Value=userid }
+                        //};
+                        //dt = idal.SqlQueryForDataTatable("select d.Access,e.* from [SYS_ROLE_PERMISSION_RELATION] c  inner join [SYS_PERMISSION_MENU_RELATION] d on c.PermissionID=d.PermissionID inner join [SYS_MENU] e on d.MenuID=e.ID where  c.RoleId=(SELECT b.RoleID FROM [ZhpGame].[dbo].[SYS_USER_ROLE_RELATION] a  inner join [SYS_ROLE] b  on a.RoleID=b.RoleID where  a.UserID=@UserID) ", parameters);
+
+                        #endregion
+                        //Logger.Debug(string.Format("微信调试信息：{0}", " var list = idal.FindBy(CompileLinqSearch.AndAlso(exp1, exp2)).ToList();之前"));
+                        //var list = idal.FindBy(CompileLinqSearch.AndAlso(exp3, exp)).ToList();
+
+                        var list=dbcontext.Set<Zhp_GameCount>().Where(CompileLinqSearch.AndAlso(exp3, exp)).ToList();
+                        //Logger.Debug(string.Format("微信调试信息：{0}", " var list = idal.FindBy(CompileLinqSearch.AndAlso(exp1, exp2)).ToList();之后"));
+                        if (list != null && list.Count > 0)
+                        {
+                            Zhp_GameCount tmodel = list.FirstOrDefault();
+                            tmodel.Count = tmodel.Count + 1;
+                            //idal.Edit(tmodel);
+                             dbcontext.Entry(tmodel).State = (EntityState.Modified);
+                             dbcontext.SaveChanges();
+                        }
+                        else
+                        {
+                            model.Count = 1;
+                            dbcontext.Entry(model).State = (EntityState.Added);
+                            dbcontext.SaveChanges();
+                        }
+                        tran.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        tran.Rollback();
+                        Logger.Error(string.Format("游戏计数异常,异常信息:{0},Gameid：【{1}】，CountType：【{2}】", ex.ToString(), model.Gameid, model.Count_Type_Code));
+                    }
                 }
-                else
-                {                    
-                    model.Count = 1;
-                    idal.Add(model);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(string.Format("游戏计数异常,异常信息:{0},Gameid：【{1}】，CountType：【{2}】", ex.ToString(), model.Gameid, model.Count_Type_Code));
             }
 
-            idal.Save();
         }
     }
 }

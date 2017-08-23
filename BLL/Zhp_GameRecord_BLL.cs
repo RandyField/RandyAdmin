@@ -102,21 +102,23 @@ namespace BLL
         public List<Zhp_GameRecord> GetSort(string recordtype, int top)
         {
             List<Zhp_GameRecord> list = null;
-            string date = DateTime.Now.Date.ToString();
+            string startdate = DateTime.Now.Date.ToString();
+            string enddate = DateTime.Now.ToShortDateString() + " 23:59:59";
             try
             {
                 DbParameter[] parameters;
                 parameters = new[]{
                      new SqlParameter(){ ParameterName="@recordtype", Value=recordtype },
                      new SqlParameter(){ ParameterName="@top", Value=top },
-                     new SqlParameter(){ ParameterName="@date", Value=date }
+                     new SqlParameter(){ ParameterName="@startdate", Value=startdate },
+                     new SqlParameter(){ ParameterName="@enddate", Value=enddate }
                 };
-                string sql = @"SELECT top (@top) * FROM [ZhpGame].[dbo].[Zhp_GameRecord]  where RecordType=@recordtype and  UploadTime>=@date order by cast(PlayerScore as int) desc";
+                string sql = @"SELECT top (@top) * FROM [ZhpGame].[dbo].[Zhp_GameRecord]  where RecordType=@recordtype and  UploadTime>=@startdate and UploadTime <=@enddate order by cast(PlayerScore as int) desc";
                 list = idal.SqlQuery<Zhp_GameRecord>(sql, parameters);
             }
             catch (Exception ex)
             {
-                Logger.Error(string.Format("Zhp_GameRecord_BLL 根据条件获取排名实体列表异常,异常信息:{0},日期：【{1}】", ex.ToString(), date));
+                Logger.Error(string.Format("Zhp_GameRecord_BLL 根据条件获取排名实体列表异常,异常信息:{0},日期：【{1}】", ex.ToString(), startdate));
             }
             return list;
         }
@@ -134,13 +136,16 @@ namespace BLL
             List<Zhp_GameRecord> list = null;
             try
             {
+                string startdate = date;
+                string enddate = date + " 23:59:59";
                 DbParameter[] parameters;
                 parameters = new[]{
                     new SqlParameter(){ ParameterName="@top", Value=top },
                     new SqlParameter(){ ParameterName="@recordtype", Value=recordtype},                    
-                    new SqlParameter(){ ParameterName="@date", Value=date }
+                     new SqlParameter(){ ParameterName="@startdate", Value=startdate },
+                     new SqlParameter(){ ParameterName="@enddate", Value=enddate }
                 };
-                string sql = @"SELECT top (@top) * FROM [ZhpGame].[dbo].[Zhp_GameRecord]  where RecordType=@recordtype and  UploadTime>=@date order by cast(PlayerScore as int) desc";
+                string sql = @"SELECT top (@top) * FROM [ZhpGame].[dbo].[Zhp_GameRecord]  where RecordType=@recordtype and UploadTime>=@startdate and UploadTime <=@enddate order by cast(PlayerScore as int) desc";
                 list = idal.SqlQuery<Zhp_GameRecord>(sql, parameters);
             }
             catch (Exception ex)
@@ -256,9 +261,14 @@ namespace BLL
                 {
                     try
                     {
-                        //保存用户微信信息
-                        dbcontext.Set<Zhp_WxUserInfo>().Add(wxmodel);
-                        dbcontext.SaveChanges();
+                        if (dbcontext.Set<Zhp_WxUserInfo>().Where(a => a.openid == wxmodel.openid).ToList().Count == 0)
+                        {
+                            //保存用户微信信息
+                            dbcontext.Set<Zhp_WxUserInfo>().Add(wxmodel);
+                            dbcontext.SaveChanges();
+                        }
+
+
 
                         //保存游戏数据
                         model.SaveTime = DateTime.Now;
