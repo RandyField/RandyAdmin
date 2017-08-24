@@ -16,7 +16,7 @@ namespace WeChat.Controllers
         public readonly string _appId = ConfigurationManager.AppSettings["AppId"];
         public readonly string _appsecret = ConfigurationManager.AppSettings["Appsecret"];
         public readonly string _key = ConfigurationManager.AppSettings["encryption"];
-        public readonly string _wxurl = ConfigurationManager.AppSettings["wxurl"];
+       
 
         /// <summary>
         /// 跳转页面

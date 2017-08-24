@@ -150,7 +150,7 @@
                         },
                         success: function (data) {
                             if (data.success) {
-                                location.href = "../Gameover/HasUpload";
+                                location.href = "../Gameover/GetScore?" + "&rank=" + data.rank + "&score=" + data.score + "";
                             }
                             else {
                                 location.href = "../Gameover/HasUpload";

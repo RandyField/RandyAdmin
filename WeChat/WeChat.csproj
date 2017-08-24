@@ -144,9 +144,14 @@
     <Content Include="assets\bootstrap\bootstrap.css" />
     <Content Include="assets\bootstrap\bootstrap.min.css" />
     <Content Include="assets\css\main.css" />
+    <Content Include="assets\img\bg.jpg" />
     <Content Include="assets\img\error.jpg" />
+    <Content Include="assets\img\li-head.png" />
+    <Content Include="assets\img\NoData.jpg" />
     <Content Include="assets\img\phone.jpg" />
+    <Content Include="assets\img\Rank-head.png" />
     <Content Include="assets\img\uploaded.jpg" />
+    <Content Include="assets\img\yourscore.jpg" />
     <Content Include="assets\js\bootstrap.js" />
     <Content Include="assets\js\bootstrap.min.js" />
     <Content Include="assets\js\flexible.js" />
@@ -247,6 +252,9 @@
     <Content Include="Views\Gameover\Index.cshtml" />
     <Content Include="Views\Gameover\Upload.cshtml" />
     <Content Include="Views\Gameover\Error.cshtml" />
+    <Content Include="Views\Gameover\Query.cshtml" />
+    <Content Include="Views\Gameover\YourScore.cshtml" />
+    <Content Include="Views\Gameover\NoData.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -94,6 +94,130 @@ namespace BLL
         }
 
         /// <summary>
+        /// 获取该微信号最高分
+        /// </summary>
+        /// <param name="openid"></param>
+        /// <returns></returns>
+        public Zhp_GameRecord GetByOpenid(string openid)
+        {
+            List<Zhp_GameRecord> list = null;
+            //string startdate = DateTime.Now.Date.ToString();
+            //string enddate = DateTime.Now.ToShortDateString() + " 23:59:59";
+            Zhp_GameRecord model = null;
+            try
+            {
+                DbParameter[] parameters;
+                parameters = new[]{
+                     new SqlParameter(){ ParameterName="@openid", Value=openid }
+                     //,
+                     //new SqlParameter(){ ParameterName="@top", Value=top }
+                     //,
+                     //new SqlParameter(){ ParameterName="@startdate", Value=startdate },
+                     //new SqlParameter(){ ParameterName="@enddate", Value=enddate }
+                };
+
+                //and  UploadTime>=@startdate and UploadTime <=@enddate
+                //string sql = @"SELECT top (@top) * FROM [ZhpGame].[dbo].[Zhp_GameRecord]  where RecordType=@recordtype order by cast(PlayerScore as int) desc";
+                string sql = @" SELECT  top 1 * FROM [ZhpGame].[dbo].[Zhp_GameRecord]  where  PlayerOpenId=@openid order by cast(PlayerScore as int) desc";
+                list = idal.SqlQuery<Zhp_GameRecord>(sql, parameters);
+                if (list != null && list.Count > 0)
+                {
+                    model = list.FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format("Zhp_GameRecord_BLL 获取该微信号最高分,异常信息:{0}", ex.ToString()));
+            }
+            return model;
+        }
+
+
+        /// <summary>
+        /// 获取此记录类型的前五名
+        /// </summary>
+        /// <param name="recordType"></param>
+        /// <returns></returns>
+        public List<Zhp_GameRecord> GetByRecordtype(string recordType)
+        {
+            List<Zhp_GameRecord> list = null;
+            //string startdate = DateTime.Now.Date.ToString();
+            //string enddate = DateTime.Now.ToShortDateString() + " 23:59:59";
+            //Zhp_GameRecord model = null;
+            try
+            {
+                DbParameter[] parameters;
+                parameters = new[]{
+                     new SqlParameter(){ ParameterName="@recordtype", Value=recordType }
+                     //,
+                     //new SqlParameter(){ ParameterName="@top", Value=top }
+                     //,
+                     //new SqlParameter(){ ParameterName="@startdate", Value=startdate },
+                     //new SqlParameter(){ ParameterName="@enddate", Value=enddate }
+                };
+
+                //and  UploadTime>=@startdate and UploadTime <=@enddate
+                //string sql = @"SELECT top (@top) * FROM [ZhpGame].[dbo].[Zhp_GameRecord]  where RecordType=@recordtype order by cast(PlayerScore as int) desc";
+                string sql = @" SELECT  top 5 * FROM [ZhpGame].[dbo].[Zhp_GameRecord]  where  RecordType=@recordtype order by cast(PlayerScore as int) desc";
+                list = idal.SqlQuery<Zhp_GameRecord>(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format("Zhp_GameRecord_BLL 获取该微信号最高分,异常信息:{0}", ex.ToString()));
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 获取游戏记录的排名
+        /// </summary>
+        /// <param name="id">记录id</param>
+        /// <param name="openid">玩家微信id</param>
+        /// <param name="recordtype"></param>
+        /// <returns></returns>
+        public string GetSocreRank(string id, string recordtype)
+        {
+            string rank = "";
+            DataTable dt = null;
+            //SqlQueryForDataTatable
+            try
+            {
+                DbParameter[] parameters;
+                parameters = new[]{
+                     new SqlParameter(){ ParameterName="@recordtype", Value=recordtype }
+                     //,
+                     //new SqlParameter(){ ParameterName="@top", Value=top }
+                     //,
+                     //new SqlParameter(){ ParameterName="@startdate", Value=startdate },
+                     //new SqlParameter(){ ParameterName="@enddate", Value=enddate }
+                };
+
+                //and  UploadTime>=@startdate and UploadTime <=@enddate
+                //string sql = @"SELECT top (@top) * FROM [ZhpGame].[dbo].[Zhp_GameRecord]  where RecordType=@recordtype order by cast(PlayerScore as int) desc";
+                string sql = @"SELECT RANK() OVER(ORDER  BY cast(PlayerScore as int) desc) AS [RANK] ,* FROM  [ZhpGame].[dbo].[Zhp_GameRecord] where RecordType=@recordtype ";
+                dt = idal.SqlQueryForDataTatable(sql, parameters);
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        if (row["ID"].ToString().Trim() == id)
+                        {
+                            rank = row["RANK"].ToString().Trim();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format("Zhp_GameRecord_BLL 获取该微信号最高分,异常信息:{0}", ex.ToString()));
+            }
+            return rank;
+        }
+
+
+
+        /// <summary>
         /// 获取游戏记录排名
         /// </summary>
         /// <param name="recordtype"></param>
@@ -102,23 +226,26 @@ namespace BLL
         public List<Zhp_GameRecord> GetSort(string recordtype, int top)
         {
             List<Zhp_GameRecord> list = null;
-            string startdate = DateTime.Now.Date.ToString();
-            string enddate = DateTime.Now.ToShortDateString() + " 23:59:59";
+            //string startdate = DateTime.Now.Date.ToString();
+            //string enddate = DateTime.Now.ToShortDateString() + " 23:59:59";
             try
             {
                 DbParameter[] parameters;
                 parameters = new[]{
                      new SqlParameter(){ ParameterName="@recordtype", Value=recordtype },
-                     new SqlParameter(){ ParameterName="@top", Value=top },
-                     new SqlParameter(){ ParameterName="@startdate", Value=startdate },
-                     new SqlParameter(){ ParameterName="@enddate", Value=enddate }
+                     new SqlParameter(){ ParameterName="@top", Value=top }
+                     //,
+                     //new SqlParameter(){ ParameterName="@startdate", Value=startdate },
+                     //new SqlParameter(){ ParameterName="@enddate", Value=enddate }
                 };
-                string sql = @"SELECT top (@top) * FROM [ZhpGame].[dbo].[Zhp_GameRecord]  where RecordType=@recordtype and  UploadTime>=@startdate and UploadTime <=@enddate order by cast(PlayerScore as int) desc";
+
+                //and  UploadTime>=@startdate and UploadTime <=@enddate
+                string sql = @"SELECT top (@top) * FROM [ZhpGame].[dbo].[Zhp_GameRecord]  where RecordType=@recordtype order by cast(PlayerScore as int) desc";
                 list = idal.SqlQuery<Zhp_GameRecord>(sql, parameters);
             }
             catch (Exception ex)
             {
-                Logger.Error(string.Format("Zhp_GameRecord_BLL 根据条件获取排名实体列表异常,异常信息:{0},日期：【{1}】", ex.ToString(), startdate));
+                Logger.Error(string.Format("Zhp_GameRecord_BLL 根据条件获取排名实体列表异常,异常信息:{0},记录类型：【{1}】", ex.ToString(), recordtype));
             }
             return list;
         }
@@ -396,18 +523,19 @@ namespace BLL
         /// <param name="exp">更新条件</param>
         /// <param name="dic">更新值</param>
         /// <returns></returns>
-        public bool Update(Expression<Func<Zhp_GameRecord, bool>> exp, Dictionary<string, object> dic, out string msg)
+        public bool Update(Expression<Func<Zhp_GameRecord, bool>> exp, Dictionary<string, object> dic,  out Zhp_GameRecord updatemodel)
         {
+            updatemodel = null;
             bool success = false;
             Zhp_GameRecord model = null;
             try
             {
                 List<Zhp_GameRecord> list = null;
                 list = idal.FindBy(exp).ToList();
-                msg = "保存成功";
                 if (list.Count > 0)
                 {
                     model = list.FirstOrDefault();
+                    updatemodel = model;
                     if (model.PlayerPhone == null)
                     {
                         idal.update(exp, dic);
@@ -419,6 +547,7 @@ namespace BLL
                         Zhp_GameCount countmodel = new Zhp_GameCount();
                         countmodel.Gameid = model.Gameid;
                         countmodel.Count_Type_Code = "005";
+                        countmodel.RESERVED_1 = model.ComputerName;
                         Zhp_GameCount_BLL.getInstance().Count(countmodel);
                     }
                 }
@@ -429,7 +558,6 @@ namespace BLL
             }
             catch (Exception ex)
             {
-                msg = "保存失败";
                 success = false;
                 Logger.Error(string.Format("Zhp_GameRecord_BLL 按条件更新异常,异常信息:{0}", ex.ToString()));
             }
