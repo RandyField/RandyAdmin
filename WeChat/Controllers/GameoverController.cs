@@ -34,40 +34,46 @@ namespace WeChat.Controllers
                 Zhp_GameRecord model = null;
                 List<Zhp_GameRecord> list = null;
                 string rank = "";
-                if (wxmodel.openid != null)
+                if (wxmodel != null)
                 {
-                    //获取该同学最好的成绩
-                    model = bll.GetByOpenid(wxmodel.openid);
-                    if (model != null)
+                    if (wxmodel.openid != null)
                     {
-                        //获取前五名成绩
-                        list = bll.GetByRecordtype(model.RecordType);
+                        //获取该同学最好的成绩
+                        model = bll.GetByOpenid(wxmodel.openid);
+                        if (model != null)
+                        {
+                            //获取前五名成绩
+                            list = bll.GetByRecordtype(model.RecordType);
 
-                        //获取该同学最好成绩的名次
-                        rank = bll.GetSocreRank(model.ID.ToString(), model.RecordType);
-                    }
-                    else
-                    {
-                        return View("NoData");
+                            //获取该同学最好成绩的名次
+                            rank = bll.GetSocreRank(model.ID.ToString(), model.RecordType);
+                        }
+                        else
+                        {
+                            return View("NoData");
+                        }
                     }
                 }
+                else
+                {
+                    return View("Error");
+                }
                 ViewData["rank"] = rank;
-                Logger.Error(string.Format("rank:{0}", rank));
+                //Logger.Error(string.Format("rank:{0}", rank));
                 ViewData["nickname"] = wxmodel.nickname;
-                Logger.Error(string.Format("nickname:{0}", wxmodel.nickname));
+                //Logger.Error(string.Format("nickname:{0}", wxmodel.nickname));
                 ViewData["score"] = model.PlayerScore;
-                Logger.Error(string.Format("nickname:{0}", model.PlayerScore));
+                //Logger.Error(string.Format("nickname:{0}", model.PlayerScore));
                 ViewData["headimg"] = wxmodel.headimgurl;
-                Logger.Error(string.Format("nickname:{0}", wxmodel.headimgurl));
+                //Logger.Error(string.Format("nickname:{0}", wxmodel.headimgurl));
                 ViewData["type"] = Helper.GetParaName("001", model.RecordType);
-                Logger.Error(string.Format("type:{0}", ViewData["type"].ToString()));
+                //Logger.Error(string.Format("type:{0}", ViewData["type"].ToString()));
 
                 return View(list);
             }
             catch (Exception ex)
             {
                 Logger.Error(string.Format("查询分数,异常信息:{0}", ex.ToString()));
-                Logger.Error("Error");
                 return View("Error");
             }
         }
@@ -192,7 +198,7 @@ namespace WeChat.Controllers
             return View("Upload");
         }
 
-        public ActionResult GetScore(string rank,string score)
+        public ActionResult GetScore(string rank, string score)
         {
             ViewData["Rank"] = rank;
             ViewData["Score"] = score;
@@ -225,7 +231,7 @@ namespace WeChat.Controllers
             //ViewData["Score"] = updatemodel.PlayerScore;
             var score = new
             {
-                success=true,
+                success = true,
                 rank = rank,
                 score = updatemodel.PlayerScore
             };

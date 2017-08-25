@@ -61,8 +61,16 @@ namespace WeChat.Controllers
             {
                 Response.Redirect(string.Format("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6953deeefe22a83b&redirect_uri={0}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect",
                                         System.Web.HttpUtility.UrlEncode(url, System.Text.Encoding.UTF8)), true);
-                Response.Close();
+                //Response.Close();
+                try { Response.Flush(); }
+                catch { }
+                finally
+                {
+                    System.Web.HttpContext.Current.ApplicationInstance.CompleteRequest();
+                } 
             }
+
+           
         }
 
         /// <summary>
