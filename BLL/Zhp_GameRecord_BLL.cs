@@ -680,10 +680,10 @@ namespace BLL
                 {
                     condition.AddCondition("a.RecordType", recordtype, SqlOperator.Equal, true);
                 }
-                if (!string.IsNullOrWhiteSpace(gametime))
-                {
-                    condition.AddCondition("a.UploadTime", gametime, SqlOperator.MoreThanOrEqual, true);
-                }
+                //if (!string.IsNullOrWhiteSpace(gametime))
+                //{
+                //    condition.AddCondition("a.UploadTime", gametime, SqlOperator.MoreThanOrEqual, true);
+                //}
 
                 //if (!string.IsNullOrWhiteSpace(gameid))
                 //{
